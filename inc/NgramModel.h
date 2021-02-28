@@ -41,7 +41,7 @@ public:
 
     std::string generate_text(size_t token_count);
 
-    void print_ngrams(const std::vector<std::tuple<std::vector<std::string>, std::string>> &obrained_ngrams);
+    static void print_ngrams(const std::vector<std::tuple<std::vector<std::string>, std::string>> &obrained_ngrams);
 
 private:
     size_t n;

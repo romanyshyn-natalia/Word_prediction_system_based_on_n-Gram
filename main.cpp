@@ -14,7 +14,7 @@ int main() {
     NgramModel m{3};
     auto ngrams = m.get_ngrams(tokens);
 
-    m.print_ngrams(ngrams);
+    NgramModel::print_ngrams(ngrams);
 
     return 0;
 }
