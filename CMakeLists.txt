@@ -15,5 +15,5 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 file(GLOB SRC "include/*.hpp" "src/*.cpp")
 
-add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h)
+add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h)
 TARGET_LINK_LIBRARIES(n_gram LINK_PUBLIC ${Boost_LIBRARIES})

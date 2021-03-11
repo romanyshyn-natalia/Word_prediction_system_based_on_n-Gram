@@ -5,11 +5,12 @@
 #ifndef N_GRAM_NGRAMMODEL_H
 #define N_GRAM_NGRAMMODEL_H
 
-#include <cstdlib>
+
 #include <map>
-#include <vector>
-#include <string>
 #include "boost/array.hpp"
+#include <boost/algorithm/string/join.hpp>
+#include "Ngram.h"
+#include <unordered_map>
 
 
 class NgramModel {
@@ -30,10 +31,9 @@ public:
     ~NgramModel() = default;
 
     //methods
-    std::vector<std::tuple<std::vector<std::string>, std::string>> get_ngrams(std::vector<std::string>
-                                                                              &tokens) const;
+    std::vector<Ngram> get_ngrams(std::vector<std::string> &tokens) const;
 
-    void update(const std::string &sentence);
+    void update(std::vector<std::string> &tokens);
 
     double probability(const std::vector<std::string> &current_context, const std::string &token);
 
@@ -41,11 +41,11 @@ public:
 
     std::string generate_text(size_t token_count);
 
-    static void print_ngrams(const std::vector<std::tuple<std::vector<std::string>, std::string>> &obrained_ngrams);
+    static void print_ngrams(const std::vector<Ngram> &obtained_ngrams);
 
 private:
     size_t n;
-    std::map<std::vector<std::string>, std::vector<std::string>> context;
+    std::unordered_map<std::string, std::vector<std::string>> context;
     std::map<std::vector<std::string>, unsigned long long> ngram_count;
 };
 
