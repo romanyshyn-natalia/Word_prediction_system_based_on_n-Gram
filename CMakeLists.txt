@@ -10,10 +10,18 @@ endif ()
 set(CMAKE_BUILD_TYPE Debug)
 #set(CMAKE_BUILD_TYPE Release)
 
-find_package(Boost COMPONENTS filesystem REQUIRED)
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+find_package(Threads REQUIRED)
+find_package(ICU REQUIRED COMPONENTS uc i18n)
+find_package(Boost REQUIRED COMPONENTS iostreams filesystem locale system)
+
+set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
+set(Boost_USE_MULTITHREAD ON)  # enable multithreading
+
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}, ${ICU_LIBRARIES}, ${ICU_INCLUDE_DIRS})
 
 file(GLOB SRC "include/*.hpp" "src/*.cpp")
 
-add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h)
-TARGET_LINK_LIBRARIES(n_gram LINK_PUBLIC ${Boost_LIBRARIES})
+add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h src/Tokenizer.cpp inc/Tokenizer.h)
+target_link_libraries(n_gram LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(n_gram LINK_PUBLIC Threads::Threads)

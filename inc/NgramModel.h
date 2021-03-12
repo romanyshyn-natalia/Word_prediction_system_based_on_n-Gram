@@ -11,6 +11,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include "Ngram.h"
 #include <unordered_map>
+#include <iostream>
 
 
 class NgramModel {

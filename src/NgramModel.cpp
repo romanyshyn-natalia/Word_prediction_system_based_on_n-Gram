@@ -2,7 +2,7 @@
 // Created by nataliia on 26.02.21.
 //
 
-#include <iostream>
+
 #include "../inc/NgramModel.h"
 
 
