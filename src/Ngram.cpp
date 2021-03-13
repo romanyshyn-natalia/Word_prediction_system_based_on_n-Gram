@@ -13,7 +13,7 @@ bool Ngram::operator==(const Ngram &right) {
     return this->token == right.token;
 }
 
-std::size_t Ngram::hash_value(const Ngram &ngram) {
+std::size_t Ngram::hash_value() {
     size_t seed = 0;
     for (const auto &word: context) {
         boost::hash_combine(seed, word);

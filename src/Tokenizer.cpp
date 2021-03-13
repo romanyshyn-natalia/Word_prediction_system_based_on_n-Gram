@@ -23,3 +23,34 @@ std::string read_binary_file(const std::string &filename) {
     return output;
 }
 
+template<typename K, typename V>
+void print_map(std::unordered_map<K, V> const &m) {
+    for (auto const &pair: m) {
+        std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+    }
+}
+
+void print_context(const NgramModel& model){
+    std::cout << "{[";
+    for (auto const &pair: model.context) {
+        for (const auto &word: pair.first.context) {
+            std::cout << word << " ";
+        }
+        std::cout << "]: [";
+        for (auto const &word: pair.second) {
+            std::cout << word << ", ";
+        }
+        std::cout << "]," << std::endl;
+    }
+}
+
+void print_context_counter(const NgramModel& model){
+    std::cout << "{[";
+    for (auto const &pair: model.ngram_count) {
+        for (const auto &word: pair.first.context) {
+            std::cout << word << " ";
+        }
+        std::cout << "]: " << pair.second;
+        std::cout << "," << std::endl;
+    }
+}

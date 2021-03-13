@@ -6,7 +6,6 @@
 #include "../inc/NgramModel.h"
 
 
-
 std::vector<Ngram>
 NgramModel::get_ngrams(std::vector<std::string> &tokens) const {
     tokens.insert(tokens.begin(), n - 1, "<s>");
@@ -26,12 +25,14 @@ NgramModel::get_ngrams(std::vector<std::string> &tokens) const {
 }
 
 void NgramModel::update(std::vector<std::string> &tokens) {
-   auto ngrams = get_ngrams(tokens);
-
-   for (auto ngram: ngrams){
-
-   }
+    auto ngrams = get_ngrams(tokens);
+    for (auto &ngram: ngrams) {
+        Context new_context(ngram);
+        ngram_count[new_context] += 1;
+        context[new_context].push_back(ngram.token);
+    }
 }
+
 
 double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
 

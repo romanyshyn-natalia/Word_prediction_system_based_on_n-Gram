@@ -12,7 +12,8 @@
 #include "Ngram.h"
 #include <unordered_map>
 #include <iostream>
-
+#include "Context.h"
+#include "hasher.h"
 
 class NgramModel {
 public:
@@ -44,10 +45,12 @@ public:
 
     static void print_ngrams(const std::vector<Ngram> &obtained_ngrams);
 
+    std::unordered_map<Context, std::vector<std::string>, hasher> context;
+
+    std::unordered_map<Context, unsigned long long, hasher> ngram_count;
+
 private:
     size_t n;
-    std::unordered_map<std::string, std::vector<std::string>> context;
-    std::map<std::vector<std::string>, unsigned long long> ngram_count;
 };
 
 

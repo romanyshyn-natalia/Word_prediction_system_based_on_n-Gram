@@ -35,7 +35,7 @@ public:
 
     Ngram &operator=(const Ngram &other) = default;
 
-    std::size_t hash_value(const Ngram &ngram);
+    std::size_t hash_value();
 };
 
 

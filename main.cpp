@@ -35,7 +35,27 @@ int main() {
     NgramModel m{3};
     auto ngrams = m.get_ngrams(tokenized);
 
-    NgramModel::print_ngrams(ngrams);
+    //NgramModel::print_ngrams(ngrams);
+
+    std::vector<std::string> tokens1 = {"You", "will", "rejoice", "to", "hear", "that", "no", "disaster", "has", "accompanied", "the",
+                                             "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded", "with", "such", "evil",
+                                             "forebodings"};
+    auto tokens2 = {"I", "arrived", "here", "yesterday", ",", "and", "my", "first", "task", "is", "to",
+              "assure", "my", "dear", "sister", "of", "my", "welfare", "and", "increasing", "confidence", "in", "the",
+              "success", "of", "my", "undertaking"};
+
+    print_context(m);
+    print_context_counter(m);
+
+    m.update(tokens1);
+
+    print_context(m);
+    print_context_counter(m);
+    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa" << std::endl;
+    m.update(tokens1);
+
+    print_context(m);
+    print_context_counter(m);
 
     return 0;
 }

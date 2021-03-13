@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}, ${ICU_LIBRARIES}, ${ICU_INCLUDE_DIRS})
 
 file(GLOB SRC "include/*.hpp" "src/*.cpp")
 
-add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h src/Tokenizer.cpp inc/Tokenizer.h)
+add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h src/Tokenizer.cpp inc/Tokenizer.h src/Context.cpp inc/Context.h inc/hasher.h)
 target_link_libraries(n_gram LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(n_gram LINK_PUBLIC Threads::Threads)
