@@ -2,53 +2,92 @@
 // Created by nataliia on 26.02.21.
 //
 
-#include <iostream>
+
 #include "../inc/NgramModel.h"
 
 
-std::vector<std::tuple<std::vector<std::string>, std::string>>
+std::vector<Ngram>
 NgramModel::get_ngrams(std::vector<std::string> &tokens) const {
     tokens.insert(tokens.begin(), n - 1, "<s>");
-    std::vector<std::tuple<std::vector<std::string>, std::string>> ngram_list;
-    std::tuple<std::vector<std::string>, std::string> current_ngram;
+    std::vector<Ngram> ngram_list;
+    Ngram current_ngram;
     for (size_t i = n - 1; i < tokens.size(); ++i) {
         std::vector<std::string> history;
         for (int p = n - 2; p >= 0; --p) {
             history.push_back(tokens[i - p - 1]);
         }
-        std::get<0>(current_ngram) = history;
-        std::get<1>(current_ngram) = tokens[i];
+        current_ngram.context = history;
+        current_ngram.token = tokens[i];
         ngram_list.push_back(current_ngram);
     }
     return ngram_list;
 
 }
 
-void NgramModel::update(const std::string &sentence) {
-
-
-}
-
-double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
-    return 0;
-}
-
-std::string NgramModel::random_token(const std::vector<std::string> &current_context) {
-    return std::string();
-}
-
-std::string NgramModel::generate_text(size_t token_count) {
-    return std::string();
-}
-
-void NgramModel::print_ngrams(const std::vector<std::tuple<std::vector<std::string>, std::string>> &obtained_ngrams) {
-    for (const auto &elem: obtained_ngrams) {
-        std::cout << "((";
-        for (const auto &gram: std::get<0>(elem)) {
-            std::cout << gram << " ";
-        }
-        std::cout << "), " << std::get<1>(elem) << "),    " << std::endl;
+void NgramModel::update(std::vector<std::string> &tokens) {
+    auto ngrams = get_ngrams(tokens);
+    for (auto &ngram: ngrams) {
+        Context new_context(ngram.context);
+        ngram_count[ngram] += 1;
+        context[new_context].push_back(ngram.token);
     }
 }
 
+
+double NgramModel::probability(Context &current_context, std::string &token) {
+    Ngram new_ngram(current_context.context, token);
+
+    auto count_of_token = double(ngram_count[new_ngram]);
+    auto count_of_ngram = double(context[current_context].size());
+    if (count_of_ngram == 0.0) return 0.0;
+
+    return count_of_token / count_of_ngram;
+}
+
+std::string NgramModel::random_token(Context &current_context) {
+    double r = random_double();
+    double summ = 0.0;
+    std::unordered_map<std::string, double> probability_map;
+    for (auto &curr_token: context[current_context]) {
+        probability_map[curr_token] = probability(current_context, curr_token);
+    }
+    for (auto &curr_token: probability_map) {
+        summ += curr_token.second;
+        if (summ > r) {
+            return curr_token.first;
+        }
+    }
+}
+
+std::string NgramModel::generate_text(size_t token_count) {
+    std::vector<std::string> curr_context;
+    for (size_t i = 0; i < n - 1; ++i) {
+        curr_context.emplace_back("<s>");
+    }
+    std::vector<std::string> result;
+    for (size_t i = 0; i < token_count; ++i) {
+        Context context_queue(curr_context);
+        std::string token = random_token(context_queue);
+        result.push_back(token);
+        curr_context.erase(curr_context.begin());
+        curr_context.push_back(token);
+    }
+    std::string s;
+    for (const auto &piece : result) {
+        s += piece;
+        s += " ";
+    }
+    return s;
+}
+
+
+double random_double() {
+    srand(565000);
+    double lower_bound = 0;
+    double upper_bound = 1;
+    std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
+    std::default_random_engine re;
+    double a_random_double = unif(re);
+    return a_random_double;
+}
 
