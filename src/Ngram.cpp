@@ -4,7 +4,7 @@
 
 #include "../inc/Ngram.h"
 
-bool Ngram::operator==(const Ngram &right) {
+bool Ngram::operator==(const Ngram &right) const {
     for (size_t i = 0; i < context.size(); ++i) {
         if (this->context[i] != right.context[i]) {
             return false;
@@ -13,18 +13,9 @@ bool Ngram::operator==(const Ngram &right) {
     return this->token == right.token;
 }
 
-std::size_t Ngram::hash_value() {
-    size_t seed = 0;
-    for (const auto &word: context) {
-        boost::hash_combine(seed, word);
-    }
-    boost::hash_combine(seed, token);
-    return seed;
-}
-
 Ngram::Ngram(std::vector<std::string> &context, std::string &token) :
-        context(std::move(context)),
-        token(std::move(token)) {}
+        context(context),
+        token(token) {}
 
 Ngram::Ngram(std::vector<std::string> &tokens) {
     std::vector<std::string> new_context;
@@ -36,9 +27,10 @@ Ngram::Ngram(std::vector<std::string> &tokens) {
 }
 
 Ngram::Ngram(Ngram &ngram) :
-        context(std::move(ngram.context)),
-        token(std::move(ngram.token)) {
+        context(ngram.context),
+        token(ngram.token) {
 }
+
 
 
 

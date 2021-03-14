@@ -18,6 +18,8 @@ public:
 
     Ngram(std::vector<std::string> &context, std::string &token);
 
+    //Ngram(Context &context, std::string &token);
+
     Ngram(std::vector<std::string> &tokens);
 
     Ngram(Ngram &ngram);
@@ -29,13 +31,13 @@ public:
     std::vector<std::string> context;
     std::string token;
 
-    bool operator==(const Ngram &right);
+    bool operator==(const Ngram &right) const;
 
     Ngram &operator=(Ngram &other) = default;
 
     Ngram &operator=(const Ngram &other) = default;
 
-    std::size_t hash_value();
+
 };
 
 

@@ -24,8 +24,6 @@ public:
 
     bool operator==(const Context &other) const;
 
-    std::size_t hash_value();
-
 };
 
 

@@ -6,14 +6,17 @@
 #define N_GRAM_NGRAMMODEL_H
 
 
-#include <map>
-#include "boost/array.hpp"
 #include <boost/algorithm/string/join.hpp>
-#include "Ngram.h"
 #include <unordered_map>
 #include <iostream>
+#include <algorithm>
+#include <random>
+#include "boost/array.hpp"
+#include "Ngram.h"
 #include "Context.h"
-#include "hasher.h"
+#include "context_hasher.h"
+#include "ngram_hasher.h"
+
 
 class NgramModel {
 public:
@@ -37,21 +40,21 @@ public:
 
     void update(std::vector<std::string> &tokens);
 
-    double probability(const std::vector<std::string> &current_context, const std::string &token);
+    double probability(Context &current_context, std::string &token);
 
-    std::string random_token(const std::vector<std::string> &current_context);
+    std::string random_token(Context &current_context);
 
     std::string generate_text(size_t token_count);
 
-    static void print_ngrams(const std::vector<Ngram> &obtained_ngrams);
+    std::unordered_map<Context, std::vector<std::string>, context_hasher> context;
 
-    std::unordered_map<Context, std::vector<std::string>, hasher> context;
-
-    std::unordered_map<Context, unsigned long long, hasher> ngram_count;
+    std::unordered_map<Ngram, unsigned long long, ngram_hasher> ngram_count;
 
 private:
     size_t n;
 };
 
+
+double random_double();
 
 #endif //N_GRAM_NGRAMMODEL_H

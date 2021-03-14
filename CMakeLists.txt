@@ -7,8 +7,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 endif ()
 
-set(CMAKE_BUILD_TYPE Debug)
-#set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 find_package(Threads REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
@@ -21,7 +21,8 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}, ${ICU_LIBRARIES}, ${ICU_INCLUDE_DIRS})
 
 file(GLOB SRC "include/*.hpp" "src/*.cpp")
 
-add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h src/Tokenizer.cpp inc/Tokenizer.h src/Context.cpp inc/Context.h inc/hasher.h)
+add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h
+        src/word_tokenizer.cpp inc/word_tokenizer.h src/Context.cpp inc/Context.h inc/context_hasher.h inc/ngram_hasher.h)
 target_link_libraries(n_gram LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(n_gram LINK_PUBLIC Threads::Threads)

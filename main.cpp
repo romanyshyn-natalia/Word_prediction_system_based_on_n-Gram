@@ -1,14 +1,13 @@
-#include <iostream>
 #include "inc/NgramModel.h"
-#include "inc/Tokenizer.h"
+#include "inc/word_tokenizer.h"
 
 
 /*
  Todo:
-    - створити клас NGRAM: контекст з n-1 попередніх слів та слово, яке передбачається
-    - створити базовий препроцесінг: токенізація, видалення пунктуації, кейс і тд
-    - розібратись з мапою або створити свою структуру
-    - дописати методи
+    - розібратись з рандомом
+    - як сортувати мапу
+    - забрати кучу гавнокоду
+    - пишемо в неділю прощення, тому гавнокод пробачається
  */
 
 int main() {
@@ -21,41 +20,26 @@ int main() {
     boost::locale::generator g;
     std::locale::global(g(""));
 
-//    std::vector<std::string> tokens;
-//    tokens = {"You", "will", "rejoice", "to", "hear", "that", "no", "disaster", "has", "accompanied", "the",
-//              "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded", "with", "such", "evil",
-//              "forebodings", ".", "I", "arrived", "here", "yesterday", ",", "and", "my", "first", "task", "is", "to",
-//              "assure", "my", "dear", "sister", "of", "my", "welfare", "and", "increasing", "confidence", "in", "the",
-//              "success", "of", "my", "undertaking", "."};
+
+    std::vector<std::string> tokens1 = {"You", "will", "rejoice", "to", "hear", "that", "no", "disaster", "has",
+                                        "accompanied", "the",
+                                        "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded",
+                                        "with", "such", "evil",
+                                        "forebodings", "You", "will", "cry", "and", "scream", "that", "no", "disaster",
+                                        "has", "accompanied", "the",
+                                        "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded",
+                                        "with", "such", "evil",
+                                        "forebodings", "You", "will", "sleep", "You", "will", "eat", "You", "will",
+                                        "cry"};
 
     std::vector<std::string> tokenized;
     std::string text_data = read_binary_file("../Frankenstein.txt");
     tokenized = tokenize_text(text_data);
 
     NgramModel m{3};
-    auto ngrams = m.get_ngrams(tokenized);
+    m.update(tokenized);
+    std::cout << m.generate_text(50) << std::endl;
 
-    //NgramModel::print_ngrams(ngrams);
-
-    std::vector<std::string> tokens1 = {"You", "will", "rejoice", "to", "hear", "that", "no", "disaster", "has", "accompanied", "the",
-                                             "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded", "with", "such", "evil",
-                                             "forebodings"};
-    auto tokens2 = {"I", "arrived", "here", "yesterday", ",", "and", "my", "first", "task", "is", "to",
-              "assure", "my", "dear", "sister", "of", "my", "welfare", "and", "increasing", "confidence", "in", "the",
-              "success", "of", "my", "undertaking"};
-
-    print_context(m);
-    print_context_counter(m);
-
-    m.update(tokens1);
-
-    print_context(m);
-    print_context_counter(m);
-    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa" << std::endl;
-    m.update(tokens1);
-
-    print_context(m);
-    print_context_counter(m);
 
     return 0;
 }
