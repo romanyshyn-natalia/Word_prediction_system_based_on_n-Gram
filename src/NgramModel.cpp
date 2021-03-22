@@ -59,6 +59,10 @@ std::string NgramModel::random_token(std::vector<std::string> &current_context) 
             return curr_token.first;
         }
     }
+#if defined __GNUC__ || defined __clang__
+#warning What should be returned here? It was UB. O.F.
+#endif
+    return std::string{}; //!
 }
 
 std::string NgramModel::generate_text(size_t token_count) {

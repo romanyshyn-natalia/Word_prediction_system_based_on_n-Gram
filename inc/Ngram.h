@@ -24,15 +24,11 @@ public:
 
     Ngram(const std::vector<std::string> &tokens);
 
-    Ngram(Ngram &ngram) = default;
-
     Ngram(const Ngram &ngram) = default;
 
     ~Ngram() = default;
 
     bool operator==(const Ngram &right) const;
-
-    Ngram &operator=(Ngram &other) = default;
 
     Ngram &operator=(const Ngram &other) = default;
 
