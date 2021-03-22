@@ -14,15 +14,15 @@ find_package(Threads REQUIRED)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS iostreams filesystem locale system)
 
-set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
-set(Boost_USE_MULTITHREAD ON)  # enable multithreading
+# Looks like it is not necessary:
+# set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
+# set(Boost_USE_MULTITHREAD ON)  # enable multithreading
 
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}, ${ICU_LIBRARIES}, ${ICU_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR} ${ICU_INCLUDE_DIRS})
 
 #file(GLOB SRC "inc/*.h" "src/*.cpp")
 
 add_executable(n_gram main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h
         src/word_tokenizer.cpp inc/word_tokenizer.h inc/ngram_hasher.h inc/vector_hasher.h)
-target_link_libraries(n_gram LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
 target_link_libraries(n_gram LINK_PUBLIC Threads::Threads)
