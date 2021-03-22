@@ -38,7 +38,5 @@ int main() {
     std::vector<std::string> v {"You",  "will"};
     std::string r("cry");
     std::cout << m.probability(v, r) << std::endl;
-
-
     return 0;
 }

@@ -4,35 +4,36 @@
 
 
 std::vector<Ngram>
-NgramModel::get_ngrams(std::vector<std::string> &tokens) const {
-    tokens.insert(tokens.begin(), n - 1, "<s>"); //! O.F.: This do needs refactoring!
+NgramModel::get_ngrams(const std::vector<std::string> &tokens) const {
+    std::vector<std::string> new_tokens = tokens;
+    new_tokens.insert(new_tokens.begin(), number_of_grams - 1, "<s>");
     std::vector<Ngram> ngram_list;
-    for (size_t i = n - 1; i < tokens.size(); ++i) {
+    for (size_t i = number_of_grams - 1; i < new_tokens.size(); ++i) {
         std::vector<std::string> history;
-        for (int p = n - 2; p >= 0; --p) {
-            history.push_back(tokens[i - p - 1]);
+        for (int p = number_of_grams - 2; p >= 0; --p) {
+            history.push_back(new_tokens[i - p - 1]);
         }
-        ngram_list.emplace_back(history, tokens[i]);
+        ngram_list.emplace_back(history, new_tokens[i]);
     }
     return ngram_list;
 }
 
-void NgramModel::update(std::vector<std::string> &tokens) {
+void NgramModel::update(const std::vector<std::string> &tokens) {
     auto ngrams = get_ngrams(tokens);
     for (auto &ngram: ngrams) {
-        std::vector<std::string> new_context{ngram.context};
+        std::vector<std::string> new_context{ngram.getContext()};
         ngram_count[ngram] += 1;
-        context[new_context].push_back(ngram.token);
+        context[new_context].push_back(ngram.getToken());
     }
 }
 
 
-double NgramModel::probability(const std::vector<std::string> &current_context, std::string &token) {
+double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
     Ngram new_ngram(current_context, token);
 
     auto count_of_token = static_cast<double>(ngram_count[new_ngram]);
-    auto count_of_ngram = context[current_context].size(); // Друге приведення було надмірним і створювало зайві попередження.
-    if (count_of_ngram == 0) return 0.0; 
+    auto count_of_ngram = context[current_context].size();
+    if (count_of_ngram == 0) return 0.0;
 
     return count_of_token / count_of_ngram; //-V113
 }
@@ -50,16 +51,13 @@ std::string NgramModel::random_token(const std::vector<std::string> &current_con
             return curr_token.first;
         }
     }
-#if defined __GNUC__ || defined __clang__
-#warning What should be returned here? It was UB. O.F.
-#endif
-    return std::string{}; //!
+    return "";
 }
 
-std::string NgramModel::generate_text(size_t token_count) {
+std::string NgramModel::generate_text(const size_t &token_count) {
     std::vector<std::string> curr_context; //! Replace by std::queue! You need to pop_front() frequently -- simulated
-                                            //! by curr_context.erase(curr_context.begin()) with O(N) complexty.
-    for (size_t i = 0; i < n - 1; ++i) {
+    //! by curr_context.erase(curr_context.begin()) with O(N) complexty.
+    for (size_t i = 0; i < number_of_grams - 1; ++i) {
         curr_context.emplace_back("<s>");
     }
     std::vector<std::string> result;

@@ -12,7 +12,7 @@ public:
 
     Ngram(std::vector<std::string> &context, std::string &token);
 
-    Ngram(const std::vector<std::string> &context, std::string &token);
+    Ngram(const std::vector<std::string> &context, const std::string &token);
 
     explicit Ngram(const std::vector<std::string> &tokens);
 
@@ -24,7 +24,23 @@ public:
 
     Ngram &operator=(const Ngram &other) = default;
 
-// private: -- needs some refactoring.
+    void setContext(std::vector<std::string> this_context) {
+        context = this_context;
+    }
+
+    std::vector<std::string> getContext() const {
+        return context;
+    }
+
+    void setToken(std::string this_token) {
+        token = this_token;
+    }
+
+    std::string getToken() const {
+        return token;
+    }
+
+private:
     std::vector<std::string> context;
     std::string token;
 };
