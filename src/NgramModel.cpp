@@ -10,20 +10,16 @@
 
 std::vector<Ngram>
 NgramModel::get_ngrams(std::vector<std::string> &tokens) const {
-    tokens.insert(tokens.begin(), n - 1, "<s>");
+    tokens.insert(tokens.begin(), n - 1, "<s>"); //! O.F.: This do needs refactoring!
     std::vector<Ngram> ngram_list;
-    Ngram current_ngram;
     for (size_t i = n - 1; i < tokens.size(); ++i) {
         std::vector<std::string> history;
         for (int p = n - 2; p >= 0; --p) {
             history.push_back(tokens[i - p - 1]);
         }
-        current_ngram.context = history;
-        current_ngram.token = tokens[i];
-        ngram_list.push_back(current_ngram);
+        ngram_list.emplace_back(history, tokens[i]);
     }
     return ngram_list;
-
 }
 
 void NgramModel::update(std::vector<std::string> &tokens) {
@@ -39,14 +35,14 @@ void NgramModel::update(std::vector<std::string> &tokens) {
 double NgramModel::probability(const std::vector<std::string> &current_context, std::string &token) {
     Ngram new_ngram(current_context, token);
 
-    auto count_of_token = double(ngram_count[new_ngram]);
-    auto count_of_ngram = double(context[current_context].size());
-    if (count_of_ngram == 0.0) return 0.0;
+    auto count_of_token = static_cast<double>(ngram_count[new_ngram]);
+    auto count_of_ngram = context[current_context].size(); // Друге приведення було надмірним і створювало зайві попередження.
+    if (count_of_ngram == 0) return 0.0; 
 
-    return count_of_token / count_of_ngram;
+    return count_of_token / count_of_ngram; //-V113
 }
 
-std::string NgramModel::random_token(std::vector<std::string> &current_context) {
+std::string NgramModel::random_token(const std::vector<std::string> &current_context) {
     double r = random_double();
     double sum_ = 0.0;
     std::unordered_map<std::string, double> probability_map;
@@ -66,7 +62,8 @@ std::string NgramModel::random_token(std::vector<std::string> &current_context) 
 }
 
 std::string NgramModel::generate_text(size_t token_count) {
-    std::vector<std::string> curr_context;
+    std::vector<std::string> curr_context; //! Replace by std::queue! You need to pop_front() frequently -- simulated
+                                            //! by curr_context.erase(curr_context.begin()) with O(N) complexty.
     for (size_t i = 0; i < n - 1; ++i) {
         curr_context.emplace_back("<s>");
     }
@@ -87,6 +84,9 @@ std::string NgramModel::generate_text(size_t token_count) {
 }
 
 
+//! This function is plane wrong: Put creation of the unif and re to main() or to some singleton class
+//! -- they should be unique through the program.
+//! Additionally, srand() has no relation to C++ random facilities.
 double random_double() {
     srand(565000);
     double lower_bound = 0;

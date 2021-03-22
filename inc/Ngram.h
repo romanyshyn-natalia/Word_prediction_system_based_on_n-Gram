@@ -20,9 +20,7 @@ public:
 
     Ngram(const std::vector<std::string> &context, std::string &token);
 
-    Ngram(std::vector<std::string> &tokens);
-
-    Ngram(const std::vector<std::string> &tokens);
+    explicit  Ngram(const std::vector<std::string> &tokens);
 
     Ngram(const Ngram &ngram) = default;
 
@@ -32,6 +30,7 @@ public:
 
     Ngram &operator=(const Ngram &other) = default;
 
+// private: -- needs some refactoring.
     std::vector<std::string> context;
     std::string token;
 };

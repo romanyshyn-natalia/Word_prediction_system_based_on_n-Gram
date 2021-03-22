@@ -19,24 +19,13 @@ Ngram::Ngram(std::vector<std::string> &context, std::string &token) :
         context(context),
         token(token) {}
 
-Ngram::Ngram(std::vector<std::string> &tokens) {
-    std::vector<std::string> new_context;
-    for (size_t i = 0; i < tokens.size() - 1; ++i) {
-        context.push_back(tokens[i]);
-    }
-    token = tokens[tokens.size() - 1];
-    context = new_context;
-}
-
-
-
 Ngram::Ngram(const std::vector<std::string> &tokens) {
     std::vector<std::string> new_context;
     for (size_t i = 0; i < tokens.size() - 1; ++i) {
-        context.push_back(tokens[i]);
+        context.push_back(tokens[i]); // I perfectly sure -- there is some bug here! new_context should be used?
     }
     token = tokens[tokens.size() - 1];
-    context = new_context;
+    context =  std::move(new_context); // Here move is appropriate, though looks like code can be refactored more cleanly
 }
 
 Ngram::Ngram(const std::vector<std::string> &context, std::string &token) :
