@@ -13,24 +13,29 @@ int main() {
     std::locale::global(g(""));
 
 
-    std::vector<std::string> tokens1 = {"You", "will", "rejoice", "to", "hear", "that", "no", "disaster", "has",
-                                        "accompanied", "the",
-                                        "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded",
-                                        "with", "such", "evil",
-                                        "forebodings", "You", "will", "cry", "and", "scream", "that", "no", "disaster",
-                                        "has", "accompanied", "the",
-                                        "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded",
-                                        "with", "such", "evil",
-                                        "forebodings", "You", "will", "sleep", "You", "will", "eat", "You", "will",
-                                        "cry"};
+//    std::vector<std::string> tokens1 = {"You", "will", "rejoice", "to", "hear", "that", "no", "disaster", "has",
+//                                        "accompanied", "the",
+//                                        "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded",
+//                                        "with", "such", "evil",
+//                                        "forebodings", "You", "will", "cry", "and", "scream", "that", "no", "disaster",
+//                                        "has", "accompanied", "the",
+//                                        "commencement", "of", "an", "enterprise", "which", "you", "have", "regarded",
+//                                        "with", "such", "evil",
+//                                        "forebodings", "You", "will", "sleep", "You", "will", "eat", "You", "will",
+//                                        "cry"};
 
+    std::vector<std::string> tokens1 = {"You", "will", "rejoice", "You", "will", "cry",  "You", "will", "sleep", "You", "will", "eat", "You", "will",
+                                        "cry"};
     std::vector<std::string> tokenized;
     std::string text_data = read_binary_file("../Frankenstein.txt");
     tokenized = tokenize_text(text_data);
 
     NgramModel m{3};
-    m.update(tokenized);
-    std::cout << m.generate_text(50) << std::endl;
+    m.update(tokens1);
+
+    std::vector<std::string> v {"You",  "will"};
+    std::string r("cry");
+    std::cout << m.probability(v, r) << std::endl;
 
 
     return 0;

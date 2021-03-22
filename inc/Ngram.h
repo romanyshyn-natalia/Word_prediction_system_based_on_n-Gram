@@ -18,18 +18,17 @@ public:
 
     Ngram(std::vector<std::string> &context, std::string &token);
 
-    //Ngram(Context &context, std::string &token);
+    Ngram(const std::vector<std::string> &context, std::string &token);
 
     Ngram(std::vector<std::string> &tokens);
 
-    Ngram(Ngram &ngram);
+    Ngram(const std::vector<std::string> &tokens);
+
+    Ngram(Ngram &ngram) = default;
 
     Ngram(const Ngram &ngram) = default;
 
     ~Ngram() = default;
-
-    std::vector<std::string> context;
-    std::string token;
 
     bool operator==(const Ngram &right) const;
 
@@ -37,7 +36,8 @@ public:
 
     Ngram &operator=(const Ngram &other) = default;
 
-
+    std::vector<std::string> context;
+    std::string token;
 };
 
 

@@ -27,15 +27,15 @@ NgramModel::get_ngrams(std::vector<std::string> &tokens) const {
 void NgramModel::update(std::vector<std::string> &tokens) {
     auto ngrams = get_ngrams(tokens);
     for (auto &ngram: ngrams) {
-        Context new_context(ngram.context);
+        std::vector<std::string> new_context{ngram.context};
         ngram_count[ngram] += 1;
         context[new_context].push_back(ngram.token);
     }
 }
 
 
-double NgramModel::probability(Context &current_context, std::string &token) {
-    Ngram new_ngram(current_context.context, token);
+double NgramModel::probability(const std::vector<std::string> &current_context, std::string &token) {
+    Ngram new_ngram(current_context, token);
 
     auto count_of_token = double(ngram_count[new_ngram]);
     auto count_of_ngram = double(context[current_context].size());
@@ -44,16 +44,16 @@ double NgramModel::probability(Context &current_context, std::string &token) {
     return count_of_token / count_of_ngram;
 }
 
-std::string NgramModel::random_token(Context &current_context) {
+std::string NgramModel::random_token(std::vector<std::string> &current_context) {
     double r = random_double();
-    double summ = 0.0;
+    double sum_ = 0.0;
     std::unordered_map<std::string, double> probability_map;
     for (auto &curr_token: context[current_context]) {
         probability_map[curr_token] = probability(current_context, curr_token);
     }
     for (auto &curr_token: probability_map) {
-        summ += curr_token.second;
-        if (summ > r) {
+        sum_ += curr_token.second;
+        if (sum_ > r) {
             return curr_token.first;
         }
     }
@@ -66,7 +66,7 @@ std::string NgramModel::generate_text(size_t token_count) {
     }
     std::vector<std::string> result;
     for (size_t i = 0; i < token_count; ++i) {
-        Context context_queue(curr_context);
+        std::vector<std::string> context_queue{curr_context};
         std::string token = random_token(context_queue);
         result.push_back(token);
         curr_context.erase(curr_context.begin());

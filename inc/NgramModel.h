@@ -13,9 +13,8 @@
 #include <random>
 #include "boost/array.hpp"
 #include "Ngram.h"
-#include "Context.h"
-#include "context_hasher.h"
 #include "ngram_hasher.h"
+#include "vector_hasher.h"
 
 
 class NgramModel {
@@ -40,13 +39,13 @@ public:
 
     void update(std::vector<std::string> &tokens);
 
-    double probability(Context &current_context, std::string &token);
+    double probability(const std::vector<std::string> &current_context, std::string &token);
 
-    std::string random_token(Context &current_context);
+    std::string random_token(std::vector<std::string> &current_context);
 
     std::string generate_text(size_t token_count);
 
-    std::unordered_map<Context, std::vector<std::string>, context_hasher> context;
+    std::unordered_map<std::vector<std::string>, std::vector<std::string>, vector_hasher> context;
 
     std::unordered_map<Ngram, unsigned long long, ngram_hasher> ngram_count;
 
