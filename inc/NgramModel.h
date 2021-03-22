@@ -1,18 +1,8 @@
-//
-// Created by nataliia on 26.02.21.
-//
-
 #ifndef N_GRAM_NGRAMMODEL_H
 #define N_GRAM_NGRAMMODEL_H
 
 
-#include <boost/algorithm/string/join.hpp>
 #include <unordered_map>
-#include <iostream>
-#include <algorithm>
-#include <random>
-#include "boost/array.hpp"
-#include "Ngram.h"
 #include "ngram_hasher.h"
 #include "vector_hasher.h"
 

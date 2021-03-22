@@ -1,10 +1,5 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-//
-// Created by nataliia on 26.02.21.
-//
-
-
 #include "../inc/NgramModel.h"
 
 
@@ -43,7 +38,7 @@ double NgramModel::probability(const std::vector<std::string> &current_context, 
 }
 
 std::string NgramModel::random_token(const std::vector<std::string> &current_context) {
-    double r = random_double();
+    double r = 0.5;
     double sum_ = 0.0;
     std::unordered_map<std::string, double> probability_map;
     for (auto &curr_token: context[current_context]) {
@@ -84,16 +79,5 @@ std::string NgramModel::generate_text(size_t token_count) {
 }
 
 
-//! This function is plane wrong: Put creation of the unif and re to main() or to some singleton class
-//! -- they should be unique through the program.
-//! Additionally, srand() has no relation to C++ random facilities.
-double random_double() {
-    srand(565000);
-    double lower_bound = 0;
-    double upper_bound = 1;
-    std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
-    std::default_random_engine re;
-    double a_random_double = unif(re);
-    return a_random_double;
-}
+
 
