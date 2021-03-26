@@ -81,12 +81,12 @@ int main() {
         if (res.empty()) {
             if (n_grams == 2) {
                 std::cout << "Sorry, but we don't have any suggestions." << std::endl;
-                std::cout << "Keep typing." << std::endl;
+                break;
             } else {
                 res = bigrams.autocomplete(user_text_tokenized);
                 if (res.empty()) {
                     std::cout << "Sorry, but we don't have any suggestions." << std::endl;
-                    std::cout << "Keep typing." << std::endl;
+                    break;
                 } else {
                     int count = 1;
                     for (const auto &elem: res) {

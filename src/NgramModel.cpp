@@ -14,7 +14,6 @@ void NgramModel::get_ngrams(const std::vector<std::string> &tokens) {
         }
         ngram_list.emplace_back(history, new_tokens[i]);
     }
-
 }
 
 void NgramModel::update(const std::vector<std::string> &tokens) {
