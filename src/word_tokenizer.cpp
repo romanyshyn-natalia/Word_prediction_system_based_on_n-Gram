@@ -18,6 +18,9 @@ std::vector<std::string> tokenize_text(const std::string &text) {
 
 std::string read_binary_file(const std::string &filename) {
     std::ifstream raw_file(filename, std::ios::binary);
+    if (!raw_file){
+        throw std::runtime_error("Error with opening the file.");
+    }
     std::ostringstream buffer_ss;
     buffer_ss << raw_file.rdbuf();
     std::string output{buffer_ss.str()};

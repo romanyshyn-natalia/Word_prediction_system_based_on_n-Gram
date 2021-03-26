@@ -31,7 +31,7 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR} ${ICU_INCLUDE_DIRS})
 
 #file(GLOB SRC "inc/*.h" "src/*.cpp")
 
-add_executable(${TARGET_NAME} main.cpp ${SRC} src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h
+add_executable(${TARGET_NAME} main.cpp src/NgramModel.cpp inc/NgramModel.h src/Ngram.cpp inc/Ngram.h
         src/word_tokenizer.cpp inc/word_tokenizer.h inc/ngram_hasher.h inc/vector_hasher.h)
 
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
