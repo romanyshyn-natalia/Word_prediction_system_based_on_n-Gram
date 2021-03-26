@@ -61,17 +61,17 @@ NgramModel::probable_tokens(const std::vector<std::string> &current_context) {
 
 std::vector<std::string> NgramModel::autocomplete(const std::vector<std::string> &user_text_tokenized) {
     std::vector<std::string> current_context;
-    if (user_text_tokenized.size() < (number_of_grams - 1)) {
+    if (user_text_tokenized.size() <= (number_of_grams - 1)) {
         current_context.assign(user_text_tokenized.begin(), user_text_tokenized.end());
     } else {
-        current_context.assign(user_text_tokenized.end() - number_of_grams + 2, user_text_tokenized.end());
+        current_context.assign(user_text_tokenized.end() - number_of_grams + 1, user_text_tokenized.end());
     }
     for (size_t i = 0; i < number_of_grams - 1 - current_context.size(); ++i) {
         current_context.emplace_back("<s>");
         std::rotate(current_context.rbegin(), current_context.rbegin() + 1, current_context.rend());
     }
     std::vector<std::string> result_words;
-    auto tokens = probable_tokens(user_text_tokenized);
+    auto tokens = probable_tokens(current_context);
 
     result_words.reserve(tokens.size());
     for (const auto &word: tokens) {
