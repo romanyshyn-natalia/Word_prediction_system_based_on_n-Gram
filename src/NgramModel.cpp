@@ -18,6 +18,7 @@ void NgramModel::get_ngrams(const std::vector<std::string> &tokens) {
 
 void NgramModel::update(const std::vector<std::string> &tokens) {
     get_ngrams(tokens);
+    number_of_tokens += tokens.size();
     for (auto &ngram: getNgramList()) {
         // це довго, треба буде розпаралелити
         std::vector<std::string> new_context{ngram.getContext()};
