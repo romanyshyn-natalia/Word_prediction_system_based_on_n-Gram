@@ -6,22 +6,25 @@
 int main() {
 
 #define PRINT_INTERACTION
-#ifdef PRINT_INTERACTION
+
 
     // connect backend
     auto lbm = boost::locale::localization_backend_manager::global();
-    auto s = lbm.get_all_backends();
     lbm.select("icu");
     boost::locale::localization_backend_manager::global(lbm);
     boost::locale::generator g;
     std::locale::global(g(""));
 
     std::vector<std::string> tokenized;
+#ifdef PRINT_INTERACTION
     std::cout << "Reading the file..." << std::endl;
+#endif //PRINT_INTERACTION
     std::string text_data = read_binary_file("../resources/frankenstein.txt");
+#ifdef PRINT_INTERACTION
     std::cout << "Tokenizing..." << std::endl;
+#endif //PRINT_INTERACTION
     tokenized = tokenize_text(text_data);
-
+#ifdef PRINT_INTERACTION
     std::string str_n_grams, str_suggestions;
     size_t n_grams, suggestions;
     std::cout << "Enter number of grams: " << std::endl << "\t";
@@ -78,72 +81,32 @@ int main() {
     while (true) {
         auto res = m.autocomplete(user_text_tokenized);
 
-        if (res.empty()) {
-            if (n_grams == 2) {
-                std::cout << "Sorry, but we don't have any suggestions." << std::endl;
-                break;
-            } else {
-                res = bigrams.autocomplete(user_text_tokenized);
-                if (res.empty()) {
-                    std::cout << "Sorry, but we don't have any suggestions." << std::endl;
-                    break;
-                } else {
-                    int count = 1;
-                    for (const auto &elem: res) {
-                        std::cout << count << ". " << elem << std::endl;
-                        count++;
-                    }
-
-                    std::string str_suggestion_idx;
-                    int suggestion_idx;
-                    std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
-                    std::getline(std::cin, str_suggestion_idx);
-                    if (str_suggestion_idx == "q") {
-                        break;
-                    }
-                    try {
-                        suggestion_idx = std::stoi(str_suggestion_idx);
-                    } catch (int ex) {
-                        std::cout << "Incorrect input." << std::endl;
-                    }
-                    if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
-                        std::cout << "Incorrect suggestion index." << std::endl;
-                    }
-                    user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
-                    for (const auto &word: user_text_tokenized) {
-                        std::cout << word << " ";
-                    }
-                    std::cout << std::endl;
-                }
-            }
-        } else {
-            int count = 1;
-            for (const auto &elem: res) {
-                std::cout << count << ". " << elem << std::endl;
-                count++;
-            }
-
-            std::string str_suggestion_idx;
-            int suggestion_idx;
-            std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
-            std::getline(std::cin, str_suggestion_idx);
-            if (str_suggestion_idx == "q") {
-                break;
-            }
-            try {
-                suggestion_idx = std::stoi(str_suggestion_idx);
-            } catch (int ex) {
-                std::cout << "Incorrect input." << std::endl;
-            }
-            if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
-                std::cout << "Incorrect suggestion index." << std::endl;
-            }
-            user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
-            for (const auto &word: user_text_tokenized) {
-                std::cout << word << " ";
-            }
-            std::cout << std::endl;
+        int count = 1;
+        for (const auto &elem: res) {
+            std::cout << count << ". " << elem << std::endl;
+            count++;
         }
+
+        std::string str_suggestion_idx;
+        int suggestion_idx;
+        std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
+        std::getline(std::cin, str_suggestion_idx);
+        if (str_suggestion_idx == "q") {
+            break;
+        }
+        try {
+            suggestion_idx = std::stoi(str_suggestion_idx);
+        } catch (int ex) {
+            std::cout << "Incorrect input." << std::endl;
+        }
+        if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
+            std::cout << "Incorrect suggestion index." << std::endl;
+        }
+        user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
+        for (const auto &word: user_text_tokenized) {
+            std::cout << word << " ";
+        }
+        std::cout << std::endl;
     }
 #endif //PRINT_INTERACTION
     return 0;

@@ -24,16 +24,10 @@ public:
 
     Ngram &operator=(const Ngram &other) = default;
 
-    void setContext(std::vector<std::string> this_context) {
-        context = this_context;
-    }
+    std::ofstream& operator<<(std::ofstream &stream);
 
     std::vector<std::string> getContext() const {
         return context;
-    }
-
-    void setToken(std::string this_token) {
-        token = this_token;
     }
 
     std::string getToken() const {

@@ -9,8 +9,10 @@
 
 class NgramModel {
 public:
-    explicit NgramModel(size_t n_grams = 2, size_t suggestions = 1) : number_of_grams{n_grams},
-                                                                      number_of_suggestions{suggestions} {}
+    explicit NgramModel(size_t n_grams = 2, size_t suggestions = 1, double k_smoothing = 1) : number_of_grams{n_grams},
+                                                                                              number_of_suggestions{
+                                                                                                      suggestions},
+                                                                                              k{k_smoothing} {}
 
     ~NgramModel() = default;
 
@@ -50,44 +52,20 @@ public:
 
     std::unordered_map<Ngram, unsigned long long, ngram_hasher> ngram_count;
 
-    void setNgramList(const std::vector<Ngram> &this_ngram_list) {
-        ngram_list = this_ngram_list;
-    }
-
-    std::vector<Ngram> getNgramList() const {
-        return ngram_list;
-    }
-
     std::vector<Ngram> getNgramList() {
         return ngram_list;
     }
 
-    void setProbabilityMap(const std::unordered_map<Ngram, double, ngram_hasher> &this_probability_map) {
-        probability_map = this_probability_map;
-    }
-
-    std::unordered_map<Ngram, double, ngram_hasher> setProbabilityMap() const {
-        return probability_map;
-    }
-
-    std::unordered_map<Ngram, double, ngram_hasher> getProbabilityMap() {
-        return probability_map;
-    }
-
-    void setTokensNumber(size_t n_of_tokens) {
-        number_of_tokens = n_of_tokens;
-    }
-
-    size_t getTokensNumber() {
-        return number_of_tokens;
-    }
 
 private:
     size_t number_of_grams;
     size_t number_of_suggestions;
     size_t number_of_tokens;
     std::vector<Ngram> ngram_list;
+    std::set<std::string> tokens_list;
     std::unordered_map<Ngram, double, ngram_hasher> probability_map;
+    std::unordered_map<std::string, double> tokens_count;
+    double k;
 };
 
 
