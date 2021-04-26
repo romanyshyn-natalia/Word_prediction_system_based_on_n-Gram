@@ -15,11 +15,11 @@ public:
 
     bool Stop;
 public slots:
-    void run(std::vector<std::string>& tokenized, NgramModel& m, const size_t& n_grams,
-             const QList<QString>& files);
+    void run(NgramModel& m, const size_t& n_grams,
+             const QList<QString>& files, const double& size);
 signals:
     void progressChanged(int);
-    void start();
+    void files_out(QString);
 };
 
 #endif // THREAD_H

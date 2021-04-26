@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->comboBox->addItem("None");
     ui->comboBox->addItem("Add-k");
     ui->comboBox->addItem("Laplace");
-    ui->spinBox_2->setMinimum(1);
+    ui->spinBox_2->setMinimum(2);
 
     // Files table view
     listModel->insertColumns(0,2);
@@ -111,8 +111,6 @@ void MainWindow::on_pushButton_clicked()
             files_size -= file.size();
             break;
         }
-        // QTextStream in(&file);
-        // QString text = in.readAll();
         files.append(el);
 
         if(listModel->insertRow(listModel->rowCount())) {
@@ -168,7 +166,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     qDebug() << ui->comboBox->currentText();
 }
 
-std::vector<std::string> tokenized;
+
 NgramModel m;
 void MainWindow::on_pushButton_2_clicked()
 {
@@ -178,34 +176,11 @@ void MainWindow::on_pushButton_2_clicked()
         return;
     }
 
-
     // open dialog window
-//    LoadDialog dialog(this);
-//    connect(this, SIGNAL(tasks()), &dialog, SLOT(setProgress(int)));
-//    QFutureWatcher<void> watcher;
-//    connect(&watcher, SIGNAL(finished()), &dialog, SLOT(close()));
-//    connect(&watcher, SIGNAL(canceled()), &dialog, SLOT(close()));
-    // QFuture<void> future = QtConcurrent::run([] () {/*do parallel task here*/});
-    // watcher.setFuture(future);
-//    dialog.moveToThread(&thread);
-//    connect(&thread, &QThread::finished, dialog, &QDialog::deleteLater);
-//    dialog.setModal(true);
-//
     size_t n_grams = ui->spinBox_2->value();
-    auto* dialog = new LoadDialog(std::ref(tokenized), std::ref(m), std::ref(n_grams), std::ref(files));
-    // auto *t = new Thread();
-//    auto* t = new Thread(this);
-//    connect(t, SIGNAL(progressChanged(int)), dialog, SLOT(progress(int)));
-//    t->run(tokenized, m, n_grams, files);
+    auto* dialog = new LoadDialog(std::ref(m), std::ref(n_grams),
+                                  std::ref(files), std::ref(files_size));
     dialog->exec();
-
-
-
-    //dialog.moveToThread(&thread);
-    // thread.start();
-    // dialog.show();
-
-    // emit progressChanged(100);
 
 
 
@@ -240,6 +215,7 @@ void MainWindow::on_lineEdit_editingFinished()
 //    std::cout << n_grams << std::endl;
 //    // n_grams = ui->comboBox->currentText().toInt();
 //    suggestions = 3;
+//    n_grams = 1;
 //    NgramModel m{n_grams, suggestions};
 //    m.update(tokenized);
 
