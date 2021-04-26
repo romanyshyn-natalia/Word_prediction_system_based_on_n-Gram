@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.14.1, 2021-03-17T01:03:53. -->
+<!-- Written by QtCreator 4.14.1, 2021-04-20T12:05:26. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -22,13 +22,7 @@
      <value type="QByteArray" key="CurrentPreferences">CppGlobal</value>
     </valuemap>
    </valuemap>
-   <valuemap type="QVariantMap" key="EditorConfiguration.CodeStyle.1">
-    <value type="QString" key="language">QmlJS</value>
-    <valuemap type="QVariantMap" key="value">
-     <value type="QByteArray" key="CurrentPreferences">QmlJSGlobal</value>
-    </valuemap>
-   </valuemap>
-   <value type="int" key="EditorConfiguration.CodeStyle.Count">2</value>
+   <value type="int" key="EditorConfiguration.CodeStyle.Count">1</value>
    <value type="QByteArray" key="EditorConfiguration.Codec">UTF-8</value>
    <value type="bool" key="EditorConfiguration.ConstrainTooltips">false</value>
    <value type="int" key="EditorConfiguration.IndentSize">4</value>
@@ -110,7 +104,12 @@
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.MakeStep</value>
      </valuemap>
-     <value type="int" key="ProjectExplorer.BuildStepList.StepsCount">2</value>
+     <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.2">
+      <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
+      <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.MakeStep</value>
+      <value type="QString" key="Qt4ProjectManager.MakeStep.MakeCommand">C:\msys\mingw64\bin\mingw32-make.exe</value>
+     </valuemap>
+     <value type="int" key="ProjectExplorer.BuildStepList.StepsCount">3</value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Build</value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Build</value>
      <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.BuildSteps.Build</value>
@@ -133,7 +132,6 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Debug</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4BuildConfiguration</value>
     <value type="int" key="Qt4ProjectManager.Qt4BuildConfiguration.BuildConfiguration">2</value>
-    <value type="int" key="RunSystemFunction">0</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.1">
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">C:\Users\Deer\Documents\build-untitled-Desktop_Qt_5_15_2_MSVC2015_64bit-Release</value>
@@ -516,10 +514,11 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/Deer/Documents/untitled/untitled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/Deer/Documents/untitled/untitled.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
@@ -1181,10 +1180,11 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/Deer/Documents/untitled/untitled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/Deer/Documents/untitled/untitled.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
@@ -1406,10 +1406,9 @@
      <value type="int">14</value>
     </valuelist>
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
-    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
-    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">untitled</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">WinRt.WinRtRunConfiguration:C:/Users/Deer/Documents/untitled/untitled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/Deer/Documents/untitled/untitled.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
@@ -1633,10 +1632,9 @@
      <value type="int">14</value>
     </valuelist>
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
-    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
-    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">untitled</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">WinRt.WinRtRunConfiguration:C:/Users/Deer/Documents/untitled/untitled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/Deer/Documents/untitled/untitled.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
@@ -2298,10 +2296,11 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/Deer/Documents/untitled/untitled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/Deer/Documents/untitled/untitled.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
@@ -2750,10 +2749,9 @@
      <value type="int">14</value>
     </valuelist>
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
-    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
-    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">untitled</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">WinRt.WinRtRunConfiguration:C:/Users/Deer/Documents/untitled/untitled.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">C:/Users/Deer/Documents/untitled/untitled.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>

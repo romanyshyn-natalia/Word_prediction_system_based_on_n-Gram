@@ -74,9 +74,9 @@ margin: 0 0;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="tabWidgetPage1" native="true">
+      <widget class="QWidget" name="tabWidgetPage1">
        <property name="cursor">
         <cursorShape>ArrowCursor</cursorShape>
        </property>
@@ -223,6 +223,16 @@ padding:0;
              </widget>
             </item>
             <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QSpinBox" name="spinBox_2"/>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="spinBox_3"/>
+              </item>
+             </layout>
+            </item>
+            <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
                <widget class="QComboBox" name="comboBox">
@@ -330,7 +340,7 @@ padding:0;
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabWidgetPage2" native="true">
+      <widget class="QWidget" name="tabWidgetPage2">
        <property name="cursor">
         <cursorShape>ArrowCursor</cursorShape>
        </property>
@@ -385,6 +395,9 @@ padding:0;
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QListView" name="listView"/>
         </item>
        </layout>
       </widget>

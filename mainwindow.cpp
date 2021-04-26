@@ -2,22 +2,25 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDir>
-#include <QFile>
-#include <QVector>
 #include <QStringListModel>
 #include <QStringList>
-#include <QStandardItemModel>
 #include <QStorageInfo>
 #include <QDebug>
-#include <QFileInfo>
 #include <QCompleter>
+#include <QThread>
+#include "NGramModel.h"
+#include "word_tokenizer.h"
+#include "loaddialog.h"
+#include <QFutureWatcher>
+#include "thread.h"
 
-
+#include <QStandardItemModel>
 QStandardItemModel *listModel = new QStandardItemModel(NULL);
 QStandardItemModel *listModeltotal = new QStandardItemModel(NULL);
 QList<QString> files;
 double files_size = 0;
+// QStringListModel *str = new QStringListModel(NULL);
+QStringList result;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,10 +30,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     /* *******  PAGE 1   ******* */
 
-    // set options for combo box number of n-gramms
-    for (int i = 2; i < 6; i++) {
-        ui->comboBox->addItem(QString::number(i));
-    }
+    // set options for smoothing
+    ui->comboBox->addItem("None");
+    ui->comboBox->addItem("Add-k");
+    ui->comboBox->addItem("Laplace");
+    ui->spinBox_2->setMinimum(1);
 
     // Files table view
     listModel->insertColumns(0,2);
@@ -59,19 +63,20 @@ MainWindow::MainWindow(QWidget *parent)
     /* *******  PAGE 2   ******* */
 
     // set image on page 2
-    QPixmap pix("../untitled/ngram.png");
+    QPixmap pix("../ngram.png");
     ui->label_4->setPixmap(pix);
     ui->label_4->setScaledContents(true);
 
     // Page 2 set line for user input with auto complete
     ui->tabWidget->setTabText(0, "Main");
     ui->tabWidget->setTabText(1, "Test");
-    QStringList wordList;
-    wordList << "alpha cool" << "alpha" << "omega" << "omicron" << "zeta";
 
-    QCompleter *completer = new QCompleter(wordList, this);
+    QCompleter *completer = new QCompleter(result, this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->lineEdit->setCompleter(completer);
+    result << "I love";
+
+    // ui->listView->setModel(str);
 }
 
 MainWindow::~MainWindow()
@@ -159,5 +164,108 @@ void MainWindow::on_pushButton_3_clicked()
 /* combo box change option */
 void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     qDebug() << ui->comboBox->currentText();
+}
+
+std::vector<std::string> tokenized;
+NgramModel m;
+void MainWindow::on_pushButton_2_clicked()
+{
+    // check if user choose any files
+    if (files.empty()) {
+        QMessageBox::warning(this, "Warning", "Choose file!");
+        return;
+    }
+
+
+    // open dialog window
+//    LoadDialog dialog(this);
+//    connect(this, SIGNAL(tasks()), &dialog, SLOT(setProgress(int)));
+//    QFutureWatcher<void> watcher;
+//    connect(&watcher, SIGNAL(finished()), &dialog, SLOT(close()));
+//    connect(&watcher, SIGNAL(canceled()), &dialog, SLOT(close()));
+    // QFuture<void> future = QtConcurrent::run([] () {/*do parallel task here*/});
+    // watcher.setFuture(future);
+//    dialog.moveToThread(&thread);
+//    connect(&thread, &QThread::finished, dialog, &QDialog::deleteLater);
+//    dialog.setModal(true);
+//
+    size_t n_grams = ui->spinBox_2->value();
+    auto* dialog = new LoadDialog(std::ref(tokenized), std::ref(m), std::ref(n_grams), std::ref(files));
+    // auto *t = new Thread();
+//    auto* t = new Thread(this);
+//    connect(t, SIGNAL(progressChanged(int)), dialog, SLOT(progress(int)));
+//    t->run(tokenized, m, n_grams, files);
+    dialog->exec();
+
+
+
+    //dialog.moveToThread(&thread);
+    // thread.start();
+    // dialog.show();
+
+    // emit progressChanged(100);
+
+
+
+// добавити потік
+//    auto lbm = boost::locale::localization_backend_manager::global();
+//    auto s = lbm.get_all_backends();
+//    lbm.select("icu");
+//    boost::locale::localization_backend_manager::global(lbm);
+//    boost::locale::generator g;
+//    std::locale::global(g(""));
+//
+//    size_t n_grams, suggestions;
+//    n_grams = ui->spinBox_2->value();
+//    suggestions = 3;
+//    m = NgramModel{n_grams, suggestions};
+//    for (auto &file : files) {
+//        std::string text_data = read_binary_file(file.toUtf8().constData());
+//        tokenized = tokenize_text(text_data);
+//        m.update(tokenized);
+//        qDebug() << "Ok!";
+//    }
+
+    qDebug() << "Here!";
+
+}
+
+
+void MainWindow::on_lineEdit_editingFinished()
+{
+//    size_t n_grams, suggestions;
+//    n_grams = ui->spinBox_2->value();
+//    std::cout << n_grams << std::endl;
+//    // n_grams = ui->comboBox->currentText().toInt();
+//    suggestions = 3;
+//    NgramModel m{n_grams, suggestions};
+//    m.update(tokenized);
+
+    std::vector<std::string> user_text_tokenized;
+
+    std::string user_input = ui->lineEdit->text().toUtf8().constData();
+
+    std::vector<std::string> current_input = tokenize_text(user_input);
+    user_text_tokenized.reserve(user_text_tokenized.size() + std::distance(current_input.begin(),
+                                                                           current_input.end()));
+    user_text_tokenized.insert(user_text_tokenized.end(), current_input.begin(), current_input.end());
+
+    auto res = m.autocomplete(user_text_tokenized);
+    QStringList result2;
+    for (const auto &e: res){
+        result2.append(QString::fromStdString(e));
+        result.append(QString::fromStdString(e));
+        qDebug() << QString::fromStdString(e);
+        std::cout << e << std::endl;
+    }
+    QStringListModel *str = new QStringListModel(result2);
+    ui->listView->setModel(str);
+    qDebug() << "Finished!";
+}
+
+void MainWindow::on_spinBox_2_textChanged(const QString &arg1)
+{
+    ui->spinBox_3->setMinimum(arg1.toInt());
 }
