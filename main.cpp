@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "inc/NgramModel.h"
 #include "inc/word_tokenizer.h"
+#include "inc/time.h"
 
 int main() {
 
@@ -51,7 +52,10 @@ int main() {
     std::cout << "Analyzing your input..." << std::endl;
 
     NgramModel m{n_grams, suggestions};
+//    auto before = get_current_time_fenced();
     m.update(tokenized);
+//    auto time_to_calculate_reading = get_current_time_fenced() - before;
+//    std::cout << to_us(time_to_calculate_reading) << std::endl;
 
 
     NgramModel bigrams{2, suggestions};
@@ -146,5 +150,9 @@ int main() {
         }
     }
 #endif //PRINT_INTERACTION
+//#pragma omp parallel for
+//    for(int i=0;i<10;i++){
+//        printf("%i\n",i);
+//    }
     return 0;
 }

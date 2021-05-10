@@ -17,7 +17,7 @@ public:
     ~NgramModel() = default;
 
     //methods
-    void get_ngrams(const std::vector<std::string> &tokens); // Possibly needs refactoring -- changes tokens
+    void get_ngrams(const std::vector<std::string> &tokens);
 
     void update(const std::vector<std::string> &tokens);
 

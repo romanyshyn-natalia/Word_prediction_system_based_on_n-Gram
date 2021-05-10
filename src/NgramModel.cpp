@@ -5,27 +5,33 @@
 
 
 void NgramModel::get_ngrams(const std::vector<std::string> &tokens) {
+
+}
+
+void NgramModel::update(const std::vector<std::string> &tokens) {
     std::vector<std::string> new_tokens = tokens;
     new_tokens.insert(new_tokens.begin(), number_of_grams - 1, "<s>");
+
+    #pragma omp parallel for shared(new_tokens)
     for (size_t i = number_of_grams - 1; i < new_tokens.size(); ++i) {
         std::vector<std::string> history;
         for (int p = number_of_grams - 2; p >= 0; --p) {
             history.push_back(new_tokens[i - p - 1]);
         }
-        ngram_list.emplace_back(history, new_tokens[i]);
-    }
-}
+        #pragma omp critical
+        {
+            ngram_list.emplace_back(history, new_tokens[i]);
+        }
 
-void NgramModel::update(const std::vector<std::string> &tokens) {
-    get_ngrams(tokens);
-    for (auto &ngram: getNgramList()) {
-        // це довго, треба буде розпаралелити
+        auto ngram = ngram_list[ngram_list.size() - 1];
         std::vector<std::string> new_context{ngram.getContext()};
-        ngram_count[ngram]++;
-        context[new_context].push_back(ngram.getToken());
+        #pragma omp critical
+        {
+            ngram_count[ngram]++;
+            context[new_context].push_back(ngram.getToken());
+        }
     }
 }
-
 
 double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
     Ngram new_ngram(current_context, token);
