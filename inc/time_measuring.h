@@ -1,7 +1,5 @@
-#ifndef N_GRAM_TIME_H
-#define N_GRAM_TIME_H
-
-
+#ifndef WORD_COUNTING_TIME_MEASURING_H
+#define WORD_COUNTING_TIME_MEASURING_H
 
 #include <chrono>
 
@@ -18,6 +16,4 @@ inline long long to_us(const D &d) {
     return std::chrono::duration_cast<std::chrono::microseconds>(d).count();
 }
 
-
-
-#endif //N_GRAM_TIME_H
+#endif //WORD_COUNTING_TIME_MEASURING_H

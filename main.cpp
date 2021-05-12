@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include "inc/NgramModel.h"
 #include "inc/word_tokenizer.h"
-#include "inc/time.h"
+#include "inc/time_measuring.h"
 
 int main() {
 
@@ -19,7 +19,7 @@ int main() {
 
     std::vector<std::string> tokenized;
     std::cout << "Reading the file..." << std::endl;
-    std::string text_data = read_binary_file("../resources/frankenstein.txt");
+    std::string text_data = read_binary_file("../resources/51.txt");
     std::cout << "Tokenizing..." << std::endl;
     tokenized = tokenize_text(text_data);
 
@@ -52,10 +52,10 @@ int main() {
     std::cout << "Analyzing your input..." << std::endl;
 
     NgramModel m{n_grams, suggestions};
-//    auto before = get_current_time_fenced();
+    auto before = get_current_time_fenced();
     m.update(tokenized);
-//    auto time_to_calculate_reading = get_current_time_fenced() - before;
-//    std::cout << to_us(time_to_calculate_reading) << std::endl;
+    auto time_to_calculate_reading = get_current_time_fenced() - before;
+    std::cout << to_us(time_to_calculate_reading) << std::endl;
 
 
     NgramModel bigrams{2, suggestions};

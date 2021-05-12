@@ -12,7 +12,7 @@ void NgramModel::update(const std::vector<std::string> &tokens) {
     std::vector<std::string> new_tokens = tokens;
     new_tokens.insert(new_tokens.begin(), number_of_grams - 1, "<s>");
 
-    #pragma omp parallel for shared(new_tokens)
+    #pragma omp parallel for shared(new_tokens) default (none)
     for (size_t i = number_of_grams - 1; i < new_tokens.size(); ++i) {
         std::vector<std::string> history;
         for (int p = number_of_grams - 2; p >= 0; --p) {
