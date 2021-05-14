@@ -18,12 +18,14 @@ int main() {
 
     std::vector<std::string> tokenized;
     std::cout << "Reading the file..." << std::endl;
-    std::string text_data = read_binary_file("../resources/frankenstein.txt");
+    std::string text_data = read_binary_file("../resources/51.txt");
     std::cout << "Tokenizing..." << std::endl;
     tokenized = tokenize_text(text_data);
 
-    std::string str_n_grams, str_suggestions;
+    std::string str_n_grams, str_suggestions, str_k;
     size_t n_grams, suggestions;
+    double k;
+
     std::cout << "Enter number of grams: " << std::endl << "\t";
     std::getline(std::cin, str_n_grams);
     std::cin.clear();
@@ -35,6 +37,19 @@ int main() {
     if (n_grams < 2) {
         std::cout << "Incorrect number of grams." << std::endl;
     }
+
+    std::cout << "Enter k for add-k smoothing (1 for Laplace): " << std::endl << "\t";
+    std::getline(std::cin, str_k);
+    std::cin.clear();
+    try {
+        k = std::stod(str_k);
+    } catch (int ex) {
+        std::cout << "Incorrect input." << std::endl;
+    }
+    if (k < 0.0 || k > 1.0) {
+        std::cout << "Incorrect k." << std::endl;
+    }
+
     std::cout << "Enter number of suggestions: " << std::endl << "\t";
     std::getline(std::cin, str_suggestions);
     try {
@@ -47,19 +62,13 @@ int main() {
     }
     std::cout << "Analyzing your input..." << std::endl;
 
-    NgramModel m{n_grams, suggestions};
+    NgramModel m{n_grams, suggestions, k};
     auto before = get_current_time_fenced();
     m.update(tokenized);
     auto time_to_calculate_reading = get_current_time_fenced() - before;
-    std::cout << to_us(time_to_calculate_reading) << std::endl;
+    std::cout << "model updating time: " << to_us(time_to_calculate_reading) << std::endl;
 
 
-    NgramModel bigrams{2, suggestions};
-    if (n_grams == 2) {
-        bigrams = m;
-    } else {
-        bigrams.update(tokenized);
-    }
     std::vector<std::string> user_text_tokenized;
     std::string user_input;
     std::cout << "Start typing your text and when you want us to suggest something, press Enter." << std::endl;
@@ -71,75 +80,35 @@ int main() {
     user_text_tokenized.insert(user_text_tokenized.end(), current_input.begin(), current_input.end());
     while (true) {
         auto res = m.autocomplete(user_text_tokenized);
-        if (res.empty()) {
-            if (n_grams == 2) {
-                std::cout << "Sorry, but we don't have any suggestions." << std::endl;
-                break;
-            } else {
-                res = bigrams.autocomplete(user_text_tokenized);
-                if (res.empty()) {
-                    std::cout << "Sorry, but we don't have any suggestions." << std::endl;
-                    break;
-                } else {
-                    int count = 1;
-                    for (const auto &elem: res) {
-                        std::cout << count << ". " << elem << std::endl;
-                        count++;
-                    }
-                    std::string str_suggestion_idx;
-                    int suggestion_idx;
-                    std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
-                    std::getline(std::cin, str_suggestion_idx);
-                    if (str_suggestion_idx == "q") {
-                        break;
-                    }
-                    try {
-                        suggestion_idx = std::stoi(str_suggestion_idx);
-                    } catch (int ex) {
-                        std::cout << "Incorrect input." << std::endl;
-                    }
-                    if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
-                        std::cout << "Incorrect suggestion index." << std::endl;
-                    }
-                    user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
-                    for (const auto &word: user_text_tokenized) {
-                        std::cout << word << " ";
-                    }
-                    std::cout << std::endl;
-                }
-            }
-        } else {
-            int count = 1;
-            for (const auto &elem: res) {
-                std::cout << count << ". " << elem << std::endl;
-                count++;
-            }
-            std::string str_suggestion_idx;
-            int suggestion_idx;
-            std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
-            std::getline(std::cin, str_suggestion_idx);
-            if (str_suggestion_idx == "q") {
-                break;
-            }
-            try {
-                suggestion_idx = std::stoi(str_suggestion_idx);
-            } catch (int ex) {
-                std::cout << "Incorrect input." << std::endl;
-            }
-            if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
-                std::cout << "Incorrect suggestion index." << std::endl;
-            }
-            user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
-            for (const auto &word: user_text_tokenized) {
-                std::cout << word << " ";
-            }
-            std::cout << std::endl;
+
+        int count = 1;
+        for (const auto &elem: res) {
+            std::cout << count << ". " << elem << std::endl;
+            count++;
         }
+
+        std::string str_suggestion_idx;
+        int suggestion_idx;
+        std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
+        std::getline(std::cin, str_suggestion_idx);
+        if (str_suggestion_idx == "q") {
+            break;
+        }
+        try {
+            suggestion_idx = std::stoi(str_suggestion_idx);
+        } catch (int ex) {
+            std::cout << "Incorrect input." << std::endl;
+        }
+        if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
+            std::cout << "Incorrect suggestion index." << std::endl;
+        }
+        user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
+        for (const auto &word: user_text_tokenized) {
+            std::cout << word << " ";
+        }
+        std::cout << std::endl;
     }
 #endif //PRINT_INTERACTION
-//#pragma omp parallel for
-//    for(int i=0;i<10;i++){
-//        printf("%i\n",i);
-//    }
+
     return 0;
 }

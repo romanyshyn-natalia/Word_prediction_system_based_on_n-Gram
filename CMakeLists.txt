@@ -41,3 +41,13 @@ target_link_libraries(n_gram LINK_PUBLIC Threads::Threads)
 target_link_libraries(n_gram PRIVATE OpenMP::OpenMP_CXX)
 
 include(cmake/Config.cmake)
+
+#if(UNIX AND NOT APPLE AND NOT CYGWIN)
+#    include(PVS-Studio.cmake)
+#    pvs_studio_add_target(TARGET ${PROJECT_NAME}.analyze ALL
+#            OUTPUT FORMAT errorfile
+#            ANALYZE ${ALL_TARGETS}
+#            MODE GA:1,2,3 OP:1,2,3 GA:1,2,3
+#            OP:1,2,3 64:1,2,3 CS:1,2,3
+#            MISRA:1,2,3)
+#endif()

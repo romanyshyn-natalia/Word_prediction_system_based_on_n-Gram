@@ -11,15 +11,15 @@ void NgramModel::update(const std::vector<std::string> &tokens) {
 
     #pragma omp parallel for shared(new_tokens) default (none)
     for (size_t i = number_of_grams - 1; i < new_tokens.size(); ++i) {
+        #pragma omp critical
+        {
+            tokens_count[new_tokens[i]]++;
+        }
         std::vector<std::string> history;
         for (int p = number_of_grams - 2; p >= 0; --p) {
             history.push_back(new_tokens[i - p - 1]);
         }
-        #pragma omp critical
-        {
-            ngram_list.emplace_back(history, new_tokens[i]);
-        }
-        auto ngram = ngram_list[ngram_list.size() - 1];
+        Ngram ngram(history, new_tokens[i]);
         std::vector<std::string> new_context{ngram.getContext()};
         #pragma omp critical
         {
@@ -28,6 +28,7 @@ void NgramModel::update(const std::vector<std::string> &tokens) {
         }
     }
 }
+
 double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
     Ngram new_ngram(current_context, token);
 
