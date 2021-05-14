@@ -3,6 +3,7 @@
 #include "../inc/Ngram.h"
 
 #include <utility>
+#include <fstream>
 
 bool Ngram::operator==(const Ngram &right) const {
     for (size_t i = 0; i < context.size(); ++i) {
@@ -27,3 +28,12 @@ Ngram::Ngram(const std::vector<std::string> &tokens) {
 Ngram::Ngram(const std::vector<std::string> &context, const std::string &token) :
         context(context),
         token(token) {}
+
+std::ofstream &Ngram::operator<<(std::ofstream &stream) {
+//    std::ofstream ofile{filename};
+    for (const auto &word: context) {
+        stream << word << " ";
+    }
+    stream << token << " ";
+    return stream;
+}

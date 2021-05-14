@@ -1,12 +1,9 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <iostream>
+#include <fstream>
 #include "../inc/NgramModel.h"
 
-
-void NgramModel::get_ngrams(const std::vector<std::string> &tokens) {
-
-}
 
 void NgramModel::update(const std::vector<std::string> &tokens) {
     std::vector<std::string> new_tokens = tokens;
@@ -22,7 +19,6 @@ void NgramModel::update(const std::vector<std::string> &tokens) {
         {
             ngram_list.emplace_back(history, new_tokens[i]);
         }
-
         auto ngram = ngram_list[ngram_list.size() - 1];
         std::vector<std::string> new_context{ngram.getContext()};
         #pragma omp critical
@@ -32,15 +28,14 @@ void NgramModel::update(const std::vector<std::string> &tokens) {
         }
     }
 }
-
 double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
     Ngram new_ngram(current_context, token);
 
     auto count_of_token = static_cast<double>(ngram_count[new_ngram]);
     auto count_of_ngram = context[current_context].size();
-    if (count_of_ngram == 0) return 0.0;
 
-    return count_of_token / count_of_ngram; //-V113
+    if (count_of_ngram == 0) return 0.0;
+    return (count_of_token + k) / (count_of_ngram + k * tokens_list.size()); //-V113
 }
 
 std::vector<std::pair<std::string, double>>
@@ -61,6 +56,17 @@ NgramModel::probable_tokens(const std::vector<std::string> &current_context) {
                            [](auto &left, auto &right) {
                                return left.second > right.second;
                            });
+    std::vector<std::pair<std::string, double>> additional_most_probable(number_of_suggestions - curr_num_suggest);
+    if (curr_num_suggest < number_of_suggestions) {
+        std::partial_sort_copy(tokens_count.begin(), tokens_count.end(),
+                               additional_most_probable.begin(), additional_most_probable.end(),
+                               [](auto &left, auto &right) {
+                                   return left.second > right.second;
+                               });
+        most_probable.reserve(
+                most_probable.size() + std::distance(additional_most_probable.begin(), additional_most_probable.end()));
+        most_probable.insert(most_probable.end(), additional_most_probable.begin(), additional_most_probable.end());
+    }
     return most_probable;
 }
 

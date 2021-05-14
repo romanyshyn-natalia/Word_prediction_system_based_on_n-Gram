@@ -8,7 +8,6 @@ int main() {
 
 #define PRINT_INTERACTION
 #ifdef PRINT_INTERACTION
-
     // connect backend
     auto lbm = boost::locale::localization_backend_manager::global();
     auto s = lbm.get_all_backends();
@@ -19,7 +18,7 @@ int main() {
 
     std::vector<std::string> tokenized;
     std::cout << "Reading the file..." << std::endl;
-    std::string text_data = read_binary_file("../resources/51.txt");
+    std::string text_data = read_binary_file("../resources/frankenstein.txt");
     std::cout << "Tokenizing..." << std::endl;
     tokenized = tokenize_text(text_data);
 
@@ -30,19 +29,16 @@ int main() {
     std::cin.clear();
     try {
         n_grams = std::stoi(str_n_grams);
-
     } catch (int ex) {
         std::cout << "Incorrect input." << std::endl;
     }
     if (n_grams < 2) {
         std::cout << "Incorrect number of grams." << std::endl;
     }
-
     std::cout << "Enter number of suggestions: " << std::endl << "\t";
     std::getline(std::cin, str_suggestions);
     try {
         suggestions = std::stoi(str_suggestions);
-
     } catch (int ex) {
         std::cout << "Incorrect input." << std::endl;
     }
@@ -64,24 +60,17 @@ int main() {
     } else {
         bigrams.update(tokenized);
     }
-
     std::vector<std::string> user_text_tokenized;
-
     std::string user_input;
-
     std::cout << "Start typing your text and when you want us to suggest something, press Enter." << std::endl;
     std::cout << "If you want to stop the program, type q." << std::endl;
-
     std::getline(std::cin, user_input);
-
     std::vector<std::string> current_input = tokenize_text(user_input);
     user_text_tokenized.reserve(user_text_tokenized.size() + std::distance(current_input.begin(),
                                                                            current_input.end()));
     user_text_tokenized.insert(user_text_tokenized.end(), current_input.begin(), current_input.end());
-
     while (true) {
         auto res = m.autocomplete(user_text_tokenized);
-
         if (res.empty()) {
             if (n_grams == 2) {
                 std::cout << "Sorry, but we don't have any suggestions." << std::endl;
@@ -97,7 +86,6 @@ int main() {
                         std::cout << count << ". " << elem << std::endl;
                         count++;
                     }
-
                     std::string str_suggestion_idx;
                     int suggestion_idx;
                     std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
@@ -126,7 +114,6 @@ int main() {
                 std::cout << count << ". " << elem << std::endl;
                 count++;
             }
-
             std::string str_suggestion_idx;
             int suggestion_idx;
             std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
