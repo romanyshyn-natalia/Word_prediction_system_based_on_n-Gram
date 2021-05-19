@@ -1,5 +1,5 @@
-#ifndef NGRAM_HASHER_H
-#define NGRAM_HASHER_H
+#ifndef N_GRAM_NGRAM_HASHER_H
+#define N_GRAM_NGRAM_HASHER_H
 
 #include "ngram.h"
 #include "boost/container_hash/hash.hpp"
@@ -15,4 +15,4 @@ struct ngram_hasher {
     }
 };
 
-#endif // NGRAM_HASHER_H
+#endif //N_GRAM_NGRAM_HASHER_H

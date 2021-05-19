@@ -8,14 +8,16 @@
 #include <QDebug>
 #include <QCompleter>
 #include <QThread>
+#include <QThreadPool>
 #include "../inc/word_tokenizer.h"
+#include "../inc/filesrunnable.h"
+#include "../inc/dialog.h"
 
 #include <QStandardItemModel>
 QStandardItemModel *listModel = new QStandardItemModel(NULL);
 QStandardItemModel *listModeltotal = new QStandardItemModel(NULL);
 QList<QString> files;
-double files_size = 0;
-// QStringListModel *str = new QStringListModel(NULL);
+long long files_size = 0;
 QStringList result;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -27,21 +29,28 @@ MainWindow::MainWindow(QWidget *parent)
     /* *******  PAGE 1   ******* */
 
     // set options for smoothing
-    ui->comboBox->addItem("None");
-    ui->comboBox->addItem("Add-k");
-    ui->comboBox->addItem("Laplace");
-    ui->spinBox_2->setMinimum(2);
+    for (double i = 0.1; i < 1; i += 0.1) {
+        ui->smoothingBox->addItem(QString::number(i));
+    }
+
+    // set minimum n-gram and suggested words
+    ui->gramBox->setMinimum(2);
+    ui->wordsBox->setMinimum(3);
+
+    // set min/max threads
+    ui->threadBox->setMinimum(1);
+    ui->threadBox->setMaximum(8);
 
     // Files table view
     listModel->insertColumns(0,2);
     listModel->setHeaderData(0,Qt::Horizontal,QStringLiteral("File name"));
     listModel->setHeaderData(1,Qt::Horizontal,QStringLiteral("Size"));
-    ui->tableView_3->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tableView_3->setModel(listModel);
-    ui->tableView_3->setSelectionMode(QAbstractItemView::MultiSelection);
-    ui->tableView_3->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->tableView_3->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->tableView_3->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->filesView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->filesView->setModel(listModel);
+    ui->filesView->setSelectionMode(QAbstractItemView::MultiSelection);
+    ui->filesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->filesView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->filesView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     // Total size view
     listModeltotal->insertColumns(0,2);
@@ -110,33 +119,32 @@ void MainWindow::on_pushButton_clicked()
         files.append(el);
 
         if(listModel->insertRow(listModel->rowCount())) {
-            ui->tableView_3->setUpdatesEnabled(false);
+            ui->filesView->setUpdatesEnabled(false);
             listModel->insertRow(listModel->rowCount() + 1);
             QFileInfo fileInfo(file.fileName());
-            QString size = QString::number(file.size()/1024/1024);
+            QString size = QString::number(file.size()/1024);
             QString info = fileInfo.fileName();
             listModel->setData(listModel->index(listModel->rowCount() - 1, 0), info);
-            listModel->setData(listModel->index(listModel->rowCount() - 1, 1), size + " Mb");
-            ui->tableView_3->setUpdatesEnabled(true);
+            listModel->setData(listModel->index(listModel->rowCount() - 1, 1), size + " Kb");
+            ui->filesView->setUpdatesEnabled(true);
         }
     }
 
-    ui->tableView_3->setUpdatesEnabled(false);
-    QString sizes = QString::number(int(files_size/1024/1024));
-    listModeltotal->setData(listModeltotal->index(0,1), sizes + "Mb");
+    ui->filesView->setUpdatesEnabled(false);
+    QString sizes = QString::number(int(files_size/1024));
+    listModeltotal->setData(listModeltotal->index(0,1), sizes + "Kb");
     ui->tableView_2->resizeColumnsToContents();
-    ui->tableView_3->setUpdatesEnabled(true);
+    ui->filesView->setUpdatesEnabled(true);
 
-    qDebug() << files[0].size()/1024/1024;
+    qDebug() << files[0].size()/1024;
     qDebug() << "Files size" << files_size;
 }
 
 /* Remove files */
 void MainWindow::on_pushButton_3_clicked()
 {
-    ui->tableView_3->setUpdatesEnabled(false);
-    QModelIndexList indexes = ui->tableView_3->selectionModel()->selectedRows();
-    // QModelIndexList indexes = ui->tableView_3->selectionModel()->selectedIndexes();
+    ui->filesView->setUpdatesEnabled(false);
+    QModelIndexList indexes = ui->filesView->selectionModel()->selectedRows();
     qSort(indexes.begin(), indexes.end());
 
     for(int i = indexes.count() - 1; i > -1; --i) {
@@ -146,20 +154,13 @@ void MainWindow::on_pushButton_3_clicked()
         listModel->removeRow(indexes.at(i).row());
     }
 
-    ui->tableView_3->setUpdatesEnabled(true);
+    ui->filesView->setUpdatesEnabled(true);
 
-    ui->tableView_3->setUpdatesEnabled(false);
-    QString sizes = QString::number(int(files_size/1024/1024));
-    listModeltotal->setData(listModeltotal->index(0,1), sizes + "Mb");
+    ui->filesView->setUpdatesEnabled(false);
+    QString sizes = QString::number(int(files_size/1024));
+    listModeltotal->setData(listModeltotal->index(0,1), sizes + "Kb");
     ui->tableView_2->resizeColumnsToContents();
-    ui->tableView_3->setUpdatesEnabled(true);
-}
-
-/* combo box change option */
-void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
-{
-    qDebug() << arg1;
-    qDebug() << ui->comboBox->currentText();
+    ui->filesView->setUpdatesEnabled(true);
 }
 
 
@@ -172,32 +173,30 @@ void MainWindow::on_pushButton_2_clicked()
         return;
     }
 
-    // open dialog window
-    size_t n_grams = ui->spinBox_2->value();
-    auto* dialog = new LoadDialog(std::ref(m), std::ref(n_grams),
-                                  std::ref(files), std::ref(files_size));
+    size_t n_grams = ui->gramBox->value();
+    size_t suggestions = ui->wordsBox->value();
+    uint threads = ui->threadBox->value();
+    double k = ui->smoothingBox->currentText().toDouble();
+
+    m = NgramModel{n_grams, suggestions, k};
+
+    // create dialog window
+    auto* dialog = new Dialog();
+
+    QThreadPool* pool = QThreadPool::globalInstance();
+    pool->setMaxThreadCount(threads);
+
+    int idx = 0;
+    while (idx < files.size()) {
+        QFile file(files[idx]);
+        double prog = ( file.size() * 100.0 ) / files_size;
+        auto *t = new FilesRunnable(std::ref(m), std::ref(files[idx++]), prog);
+        pool->start(t);
+        QObject::connect(t, &FilesRunnable::progressChanged, dialog, &Dialog::progress);
+        QObject::connect(t, &FilesRunnable::textChanged, dialog, &Dialog::files_output);
+    }
     dialog->exec();
-
-
-
-// добавити потік
-//    auto lbm = boost::locale::localization_backend_manager::global();
-//    auto s = lbm.get_all_backends();
-//    lbm.select("icu");
-//    boost::locale::localization_backend_manager::global(lbm);
-//    boost::locale::generator g;
-//    std::locale::global(g(""));
-//
-//    size_t n_grams, suggestions;
-//    n_grams = ui->spinBox_2->value();
-//    suggestions = 3;
-//    m = NgramModel{n_grams, suggestions};
-//    for (auto &file : files) {
-//        std::string text_data = read_binary_file(file.toUtf8().constData());
-//        tokenized = tokenize_text(text_data);
-//        m.update(tokenized);
-//        qDebug() << "Ok!";
-//    }
+    pool->clear();
 
     qDebug() << "Here!";
 
@@ -206,19 +205,14 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_lineEdit_editingFinished()
 {
-//    size_t n_grams, suggestions;
-//    n_grams = ui->spinBox_2->value();
-//    std::cout << n_grams << std::endl;
-//    // n_grams = ui->comboBox->currentText().toInt();
-//    suggestions = 3;
-//    n_grams = 1;
-//    NgramModel m{n_grams, suggestions};
-//    m.update(tokenized);
-
-    std::vector<std::string> user_text_tokenized;
-
     std::string user_input = ui->lineEdit->text().toUtf8().constData();
 
+    // check model
+    if (user_input.empty()) {
+        return;
+    }
+
+    std::vector<std::string> user_text_tokenized;
     std::vector<std::string> current_input = tokenize_text(user_input);
     user_text_tokenized.reserve(user_text_tokenized.size() + std::distance(current_input.begin(),
                                                                            current_input.end()));
@@ -237,7 +231,3 @@ void MainWindow::on_lineEdit_editingFinished()
     qDebug() << "Finished!";
 }
 
-void MainWindow::on_spinBox_2_textChanged(const QString &arg1)
-{
-    ui->spinBox_3->setMinimum(arg1.toInt());
-}

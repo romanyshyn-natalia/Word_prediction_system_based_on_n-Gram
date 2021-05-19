@@ -1,7 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <fstream>
 #include "../inc/word_tokenizer.h"
-#include <map>
-#include <QDebug>
 
 
 std::vector<std::string> tokenize_text(const std::string &text) {

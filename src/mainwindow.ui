@@ -74,7 +74,7 @@ margin: 0 0;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabWidgetPage1">
        <property name="cursor">
@@ -123,7 +123,7 @@ padding:0;
              </widget>
             </item>
             <item>
-             <widget class="QTableView" name="tableView_3">
+             <widget class="QTableView" name="filesView">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                 <horstretch>0</horstretch>
@@ -225,17 +225,76 @@ padding:0;
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
-               <widget class="QSpinBox" name="spinBox_2"/>
+               <widget class="QSpinBox" name="gramBox">
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+               </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spinBox_3"/>
+               <widget class="QLabel" name="label_5">
+                <property name="minimumSize">
+                 <size>
+                  <width>10</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>250</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>-grams</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="maximumSize">
+                 <size>
+                  <width>350</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Number of suggestions:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="wordsBox">
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <widget class="QComboBox" name="comboBox">
+               <widget class="QLabel" name="label_7">
+                <property name="maximumSize">
+                 <size>
+                  <width>250</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Smoothing:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="smoothingBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -244,8 +303,14 @@ padding:0;
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>20</width>
+                  <width>100</width>
                   <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="currentIndex">
@@ -257,30 +322,31 @@ padding:0;
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spinBox">
-                <property name="enabled">
-                 <bool>false</bool>
+               <widget class="QLabel" name="label_8">
+                <property name="maximumSize">
+                 <size>
+                  <width>350</width>
+                  <height>16777215</height>
+                 </size>
                 </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+                <property name="text">
+                 <string>Number of threads: </string>
                 </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="threadBox">
                 <property name="minimumSize">
                  <size>
-                  <width>20</width>
+                  <width>150</width>
                   <height>0</height>
                  </size>
                 </property>
-                <property name="cursor">
-                 <cursorShape>ForbiddenCursor</cursorShape>
-                </property>
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>16</number>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>16777215</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -348,6 +414,32 @@ padding:0;
         <string/>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>100</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item alignment="Qt::AlignHCenter">
          <widget class="QLabel" name="label_4">
           <property name="sizePolicy">
@@ -358,14 +450,27 @@ padding:0;
           </property>
           <property name="minimumSize">
            <size>
-            <width>400</width>
-            <height>400</height>
+            <width>200</width>
+            <height>200</height>
            </size>
           </property>
           <property name="text">
            <string/>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>100</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item alignment="Qt::AlignHCenter">
          <widget class="QLineEdit" name="lineEdit">
@@ -391,7 +496,7 @@ padding:0;
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>150</height>
+            <height>75</height>
            </size>
           </property>
          </spacer>

@@ -42,9 +42,10 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR} ${ICU_INCLUDE_DIRS})
 
 #file(GLOB SRC "inc/*.h" "src/*.cpp")
 
-add_executable(${TARGET_NAME} main.cpp ${SRC} src/NgramModel.cpp src/mainwindow.cpp src/ngram.cpp src/word_tokenizer.cpp
-inc/NGramModel.h inc/mainwindow.h inc/ngram.h inc/ngram_hasher.h inc/vector_hasher.h inc/word_tokenizer.h src/mainwindow.ui
-        src/loaddialog.cpp inc/loaddialog.h src/loaddialog.ui src/thread.cpp inc/thread.h)
+add_executable(${TARGET_NAME} main.cpp ${SRC} src/ngrammodel.cpp src/mainwindow.cpp src/ngram.cpp src/word_tokenizer.cpp
+        inc/ngrammodel.h inc/mainwindow.h inc/ngram.h inc/ngram_hasher.h inc/vector_hasher.h inc/word_tokenizer.h src/mainwindow.ui
+        inc/filesrunnable.h src/filesrunnable.cpp
+        src/dialog.cpp src/dialog.ui inc/dialog.h inc/timemeasuring.h)
 
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
 target_link_libraries(n_gram LINK_PUBLIC Threads::Threads)

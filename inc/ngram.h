@@ -1,5 +1,5 @@
-#ifndef NGRAM_H
-#define NGRAM_H
+#ifndef N_GRAM_NGRAM_H
+#define N_GRAM_NGRAM_H
 
 #include <vector>
 #include <string>
@@ -24,16 +24,10 @@ public:
 
     Ngram &operator=(const Ngram &other) = default;
 
-    void setContext(std::vector<std::string> this_context) {
-        context = this_context;
-    }
+    std::ofstream& operator<<(std::ofstream &stream);
 
     std::vector<std::string> getContext() const {
         return context;
-    }
-
-    void setToken(std::string this_token) {
-        token = this_token;
     }
 
     std::string getToken() const {
@@ -45,4 +39,5 @@ private:
     std::string token;
 };
 
-#endif // NGRAM_H
+
+#endif //N_GRAM_NGRAM_H
