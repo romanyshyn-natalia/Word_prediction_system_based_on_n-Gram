@@ -9,10 +9,19 @@
 
 using namespace boost::locale::boundary;
 
-
-std::vector<std::string> tokenize_text(const std::string &text);
-
+/*
+ * Reads input file into the memory.
+ * @param the name of the filename.
+ * @return string.
+ */
 std::string read_binary_file(const std::string &filename);
+
+/*
+ * Function normalizes the input text and split by words.
+ * @param the string with text.
+ * @return vector of strings.
+ */
+std::vector<std::string> tokenize_text(const std::string &text);
 
 
 #endif //N_GRAM_WORD_TOKENIZER_H

@@ -1,11 +1,11 @@
 #ifndef N_GRAM_NGRAM_HASHER_H
 #define N_GRAM_NGRAM_HASHER_H
 
-#include "Ngram.h"
+#include "ngram.h"
 #include "boost/container_hash/hash.hpp"
 
 struct ngram_hasher {
-    std::size_t operator()(const Ngram &ngram) const {
+    std::size_t operator()(const ngram &ngram) const {
         size_t seed = 0;
         for (const auto &word: ngram.getContext()) {
             boost::hash_combine(seed, word);

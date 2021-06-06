@@ -2,26 +2,26 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <iostream>
 #include <fstream>
-#include "../inc/NgramModel.h"
+#include "../inc/ngram_model.h"
 
 
-void NgramModel::update(const std::vector<std::string> &tokens) {
+void ngram_model::update(const std::vector<std::string> &tokens) {
     std::vector<std::string> new_tokens = tokens;
     new_tokens.insert(new_tokens.begin(), number_of_grams - 1, "<s>");
 
-    #pragma omp parallel for shared(new_tokens) default (none)
+#pragma omp parallel for shared(new_tokens) default (none)
     for (size_t i = number_of_grams - 1; i < new_tokens.size(); ++i) {
-        #pragma omp critical
+#pragma omp critical
         {
             tokens_count[new_tokens[i]]++;
         }
         std::vector<std::string> history;
-        for (int p = number_of_grams - 2; p >= 0; --p) {
+        for (int p = static_cast<int>(number_of_grams) - 2; p >= 0; --p) {
             history.push_back(new_tokens[i - p - 1]);
         }
-        Ngram ngram(history, new_tokens[i]);
+        ngram ngram(history, new_tokens[i]);
         std::vector<std::string> new_context{ngram.getContext()};
-        #pragma omp critical
+#pragma omp critical
         {
             ngram_count[ngram]++;
             context[new_context].push_back(ngram.getToken());
@@ -29,21 +29,22 @@ void NgramModel::update(const std::vector<std::string> &tokens) {
     }
 }
 
-double NgramModel::probability(const std::vector<std::string> &current_context, const std::string &token) {
-    Ngram new_ngram(current_context, token);
+double ngram_model::probability(const std::vector<std::string> &current_context, const std::string &token) {
+    ngram new_ngram(current_context, token);
 
     auto count_of_token = static_cast<double>(ngram_count[new_ngram]);
     auto count_of_ngram = context[current_context].size();
 
     if (count_of_ngram == 0) return 0.0;
-    return (count_of_token + k) / (count_of_ngram + k * tokens_list.size()); //-V113
+    return (count_of_token + k) /
+           (static_cast<double>(count_of_ngram) + k * static_cast<double>(tokens_list.size())); //-V113
 }
 
 std::vector<std::pair<std::string, double>>
-NgramModel::probable_tokens(const std::vector<std::string> &current_context) {
+ngram_model::probable_tokens(const std::vector<std::string> &current_context) {
     std::unordered_map<std::string, double> token_probability_map;
     for (auto &curr_token: context[current_context]) {
-        Ngram current_ngram(current_context, curr_token);
+        ngram current_ngram(current_context, curr_token);
         if (probability_map.find(current_ngram) == probability_map.end()) {
             probability_map[current_ngram] = probability(current_context, curr_token);
         }
@@ -71,7 +72,7 @@ NgramModel::probable_tokens(const std::vector<std::string> &current_context) {
     return most_probable;
 }
 
-std::vector<std::string> NgramModel::autocomplete(const std::vector<std::string> &user_text_tokenized) {
+std::vector<std::string> ngram_model::autocomplete(const std::vector<std::string> &user_text_tokenized) {
     std::vector<std::string> current_context;
     if (user_text_tokenized.size() <= (number_of_grams - 1)) {
         current_context.assign(user_text_tokenized.begin(), user_text_tokenized.end());
@@ -89,7 +90,7 @@ std::vector<std::string> NgramModel::autocomplete(const std::vector<std::string>
     for (const auto &word: tokens) {
         result_words.emplace_back(word.first);
     }
-    return result_words;
+    return resultй_words;
 }
 
 

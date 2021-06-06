@@ -1,6 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "inc/NgramModel.h"
+#include "inc/ngram_model.h"
 #include "inc/word_tokenizer.h"
 #include "inc/time_measuring.h"
 
@@ -47,7 +47,7 @@ int main() {
         std::cout << "Incorrect input." << std::endl;
     }
     if (k < 0.0 || k > 1.0) {
-        std::cout << "Incorrect k." << std::endl;
+        std::cout << "Incorrect k for smoothing." << std::endl;
     }
 
     std::cout << "Enter number of suggestions: " << std::endl << "\t";
@@ -62,7 +62,7 @@ int main() {
     }
     std::cout << "Analyzing your input..." << std::endl;
 
-    NgramModel m{n_grams, suggestions, k};
+    ngram_model m{n_grams, suggestions, k};
     auto before = get_current_time_fenced();
     m.update(tokenized);
     auto time_to_calculate_reading = get_current_time_fenced() - before;

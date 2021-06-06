@@ -1,5 +1,5 @@
-#ifndef N_GRAM_NGRAMMODEL_H
-#define N_GRAM_NGRAMMODEL_H
+#ifndef N_GRAM_NGRAM_MODEL_H
+#define N_GRAM_NGRAM_MODEL_H
 
 
 #include <unordered_map>
@@ -7,14 +7,14 @@
 #include "vector_hasher.h"
 
 
-class NgramModel {
+class ngram_model {
 public:
-    explicit NgramModel(size_t n_grams = 2, size_t suggestions = 1, double k_smoothing = 1) : number_of_grams{n_grams},
-                                                                                              number_of_suggestions{
-                                                                                                      suggestions},
-                                                                                              k{k_smoothing} {}
+    explicit ngram_model(size_t n_grams = 2, size_t suggestions = 1, double k_smoothing = 1) : number_of_grams{n_grams},
+                                                                                               number_of_suggestions{
+                                                                                                       suggestions},
+                                                                                               k{k_smoothing} {}
 
-    ~NgramModel() = default;
+    ~ngram_model() = default;
 
     /*
      * Updates model with extracted ngrams from tokens
@@ -43,23 +43,17 @@ public:
 
     std::unordered_map<std::vector<std::string>, std::vector<std::string>, vector_hasher> context;
 
-    std::unordered_map<Ngram, unsigned long long, ngram_hasher> ngram_count;
-
-    std::vector<Ngram> getNgramList() {
-        return ngram_list;
-    }
+    std::unordered_map<ngram, unsigned long long, ngram_hasher> ngram_count;
 
 
 private:
     size_t number_of_grams;
     size_t number_of_suggestions;
-    size_t number_of_tokens;
-    std::vector<Ngram> ngram_list;
     std::set<std::string> tokens_list;
-    std::unordered_map<Ngram, double, ngram_hasher> probability_map;
+    std::unordered_map<ngram, double, ngram_hasher> probability_map;
     std::unordered_map<std::string, double> tokens_count;
     double k;
 };
 
 
-#endif //N_GRAM_NGRAMMODEL_H
+#endif //N_GRAM_NGRAM_MODEL_H

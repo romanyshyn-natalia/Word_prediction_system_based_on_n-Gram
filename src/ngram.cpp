@@ -1,11 +1,10 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "../inc/Ngram.h"
-
-#include <utility>
 #include <fstream>
+#include "../inc/ngram.h"
 
-bool Ngram::operator==(const Ngram &right) const {
+
+bool ngram::operator==(const ngram &right) const {
     for (size_t i = 0; i < context.size(); ++i) {
         if (this->context[i] != right.context[i]) {
             return false;
@@ -14,23 +13,22 @@ bool Ngram::operator==(const Ngram &right) const {
     return this->token == right.token;
 }
 
-Ngram::Ngram(std::vector<std::string> &context, std::string &token) :
+ngram::ngram(std::vector<std::string> &context, std::string &token) :
         context(context),
         token(token) {}
 
-Ngram::Ngram(const std::vector<std::string> &tokens) {
+ngram::ngram(const std::vector<std::string> &tokens) {
     for (size_t i = 0; i < tokens.size() - 1; ++i) {
         context.push_back(tokens[i]);
     }
     token = tokens[tokens.size() - 1];
 }
 
-Ngram::Ngram(const std::vector<std::string> &context, const std::string &token) :
+ngram::ngram(const std::vector<std::string> &context, const std::string &token) :
         context(context),
         token(token) {}
 
-std::ofstream &Ngram::operator<<(std::ofstream &stream) {
-//    std::ofstream ofile{filename};
+std::ofstream &ngram::operator<<(std::ofstream &stream) {
     for (const auto &word: context) {
         stream << word << " ";
     }
