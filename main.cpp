@@ -19,7 +19,7 @@ int main() {
 
     std::vector<std::string> tokenized;
     std::cout << "Reading the file..." << std::endl;
-    std::string text_data = read_binary_file("../resources/51.txt");
+    std::string text_data = read_binary_file("../resources/frankenstein.txt");
     std::cout << "Tokenizing..." << std::endl;
     tokenized = tokenize_text(text_data);
 
@@ -64,7 +64,6 @@ int main() {
     std::cout << "Analyzing your input..." << std::endl;
 
     ngram_model<unsigned long> m{n_grams, suggestions, k};
-
     auto before = get_current_time_fenced();
     m.update(tokenized);
     auto time_to_calculate_reading = get_current_time_fenced() - before;

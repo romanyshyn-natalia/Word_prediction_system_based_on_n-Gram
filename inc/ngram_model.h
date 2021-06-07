@@ -29,7 +29,10 @@ public:
     void update(const std::vector<std::string> &tokens) {
         std::vector<std::string> new_tokens = tokens;
         new_tokens.insert(new_tokens.begin(), number_of_grams - 1, "<s>");
-        hashed_tokens = tokens_hasher(new_tokens);
+        auto new_hashed = tokens_hasher(new_tokens);
+        for (const auto &word : new_hashed) {
+            hashed_tokens[word.first] = word.second;
+        }
         std::vector<unsigned long> hash_tokens = hashed_text(new_tokens);
 #pragma omp parallel for shared(hash_tokens) default (none)
         for (size_t i = number_of_grams - 1; i < hash_tokens.size(); ++i) {
@@ -137,6 +140,15 @@ public:
         }
         return result_words;
     };
+
+    /*
+    * Checks whether the model is empty.
+    * @param nothing.
+    * @return bool.
+    */
+    bool is_empty() {
+        return tokens_list.empty();
+    }
 
     std::unordered_map<std::vector<T>, std::vector<T>, vector_hasher<T>> context;
 
