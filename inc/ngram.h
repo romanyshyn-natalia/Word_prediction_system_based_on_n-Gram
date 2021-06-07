@@ -26,11 +26,11 @@ public:
 
     std::ofstream &operator<<(std::ofstream &stream);
 
-    std::vector<std::string> getContext() const {
+    [[nodiscard]] std::vector<std::string> getContext() const {
         return context;
     }
 
-    std::string getToken() const {
+    [[nodiscard]] std::string getToken() const {
         return token;
     }
 

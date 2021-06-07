@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <iostream>
 #include <fstream>
-#include "../inc/ngram_model.h"
+#include "ngram_model.h"
 
 
 void ngram_model::update(const std::vector<std::string> &tokens) {
@@ -90,7 +90,7 @@ std::vector<std::string> ngram_model::autocomplete(const std::vector<std::string
     for (const auto &word: tokens) {
         result_words.emplace_back(word.first);
     }
-    return resultй_words;
+    return result_words;
 }
 
 

@@ -1,8 +1,8 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-#include "inc/ngram_model.h"
-#include "inc/word_tokenizer.h"
-#include "inc/time_measuring.h"
+#include "ngram_model.h"
+#include "word_tokenizer.h"
+#include "time_measuring.h"
 
 int main() {
 
