@@ -27,6 +27,20 @@ std::vector<std::string> tokenize_text(const std::string &text) {
 }
 
 
+std::unordered_map<unsigned long, std::string> tokens_hasher(const std::vector<std::string> &tokens) {
+    std::unordered_map<unsigned long, std::string> hashed_tokens;
+    for (const auto &token: tokens) {
+        std::size_t token_hash = std::hash<std::string>{}(token);
+        hashed_tokens[token_hash] = token;
+    }
+    return hashed_tokens;
+}
 
-
-
+std::vector<unsigned long> hashed_text(const std::vector<std::string> &tokenized) {
+    std::vector<unsigned long> hashed;
+    hashed.reserve(tokenized.size());
+    for (const auto &word: tokenized) {
+        hashed.emplace_back(std::hash<std::string>{}(word));
+    }
+    return hashed;
+}

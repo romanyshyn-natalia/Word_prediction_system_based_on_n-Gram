@@ -4,6 +4,7 @@
 #include "word_tokenizer.h"
 #include "time_measuring.h"
 
+
 int main() {
 
 #define PRINT_INTERACTION
@@ -62,7 +63,8 @@ int main() {
     }
     std::cout << "Analyzing your input..." << std::endl;
 
-    ngram_model m{n_grams, suggestions, k};
+    ngram_model<unsigned long> m{n_grams, suggestions, k};
+
     auto before = get_current_time_fenced();
     m.update(tokenized);
     auto time_to_calculate_reading = get_current_time_fenced() - before;
@@ -79,7 +81,7 @@ int main() {
                                                                            current_input.end()));
     user_text_tokenized.insert(user_text_tokenized.end(), current_input.begin(), current_input.end());
     while (true) {
-        auto res = m.autocomplete(user_text_tokenized);
+        auto res = m.autocomplete(hashed_text(user_text_tokenized));
 
         int count = 1;
         for (const auto &elem: res) {

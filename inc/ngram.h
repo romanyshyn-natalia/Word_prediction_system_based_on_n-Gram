@@ -4,39 +4,52 @@
 #include <vector>
 #include <string>
 
-
+template<typename T>
 class ngram {
 
 public:
     ngram() = default;
 
-    ngram(std::vector<std::string> &context, std::string &token);
+    ngram(std::vector<T> &context_, T &token_) :
+            context(context_),
+            token(token_) {}
 
-    ngram(const std::vector<std::string> &context, const std::string &token);
+    explicit ngram(const std::vector<T> &tokens) {
+        for (size_t i = 0; i < tokens.size() - 1; ++i) {
+            context.push_back(tokens[i]);
+        }
+        token = tokens[tokens.size() - 1];
+    }
 
-    explicit ngram(const std::vector<std::string> &tokens);
-
-    ngram(const ngram &ngram) = default;
+    ngram(const std::vector<T> &context, const T &token) :
+            context(context),
+            token(token) {}
 
     ~ngram() = default;
 
-    bool operator==(const ngram &right) const;
+    bool operator==(const ngram &right) const {
+        for (size_t i = 0; i < context.size(); ++i) {
+            if (this->context[i] != right.context[i]) {
+                return false;
+            }
+        }
+        return this->token == right.token;
+    };
 
     ngram &operator=(const ngram &other) = default;
 
-    std::ofstream &operator<<(std::ofstream &stream);
 
-    [[nodiscard]] std::vector<std::string> getContext() const {
+    [[nodiscard]] std::vector<T> getContext() const {
         return context;
     }
 
-    [[nodiscard]] std::string getToken() const {
+    [[nodiscard]] T getToken() const {
         return token;
     }
 
 private:
-    std::vector<std::string> context;
-    std::string token;
+    std::vector<T> context;
+    T token;
 };
 
 

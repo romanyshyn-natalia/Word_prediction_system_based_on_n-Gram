@@ -21,7 +21,23 @@ std::string read_binary_file(const std::string &filename);
  * @param the string with text.
  * @return vector of strings.
  */
+
 std::vector<std::string> tokenize_text(const std::string &text);
+
+/*
+ * Function maps an unique id for each unique word.
+ * @param the vector with tokens.
+ * @return map with hash and assigned token.
+ */
+std::unordered_map<unsigned long, std::string> tokens_hasher(const std::vector<std::string> &tokens);
+
+
+/*
+ * Function creates a vector with unique id for each word.
+ * @param the vector with tokens.
+ * @return vector with hashes.
+ */
+std::vector<unsigned long> hashed_text(const std::vector<std::string> &tokenized);
 
 
 #endif //N_GRAM_WORD_TOKENIZER_H
