@@ -15,7 +15,7 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::progress(double prog) {
+void Dialog::progress(int prog) {
     if (ui->progressBar->value() + prog >= 96) {
         ui->progressBar->setValue(100);
         ui->finishButton->setEnabled(true);

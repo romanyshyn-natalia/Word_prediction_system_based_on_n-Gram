@@ -15,11 +15,11 @@ class Dialog : public QDialog
 
 public:
     explicit Dialog(QWidget *parent = nullptr);
-    ~Dialog();
+    ~Dialog() override;
 
 
 public slots:
-    void progress(double);
+    void progress(int);
     void files_output(const QString&);
 
 signals:

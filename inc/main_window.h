@@ -14,25 +14,27 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
 signals:
     void progressChanged(int);
 
 private slots:
-    void on_pushButton_clicked();
+    void on_addButton_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_deleteButton_clicked();
 
     void on_startButton_clicked();
 
     void on_lineEdit_editingFinished();
 
+    void on_resultView_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
-    QStandardItemModel *listModel = new QStandardItemModel(NULL);
-    QStandardItemModel *listModeltotal = new QStandardItemModel(NULL);
+    QStandardItemModel *listModel = new QStandardItemModel();
+    QStandardItemModel *listModeltotal = new QStandardItemModel();
     QList<QString> files;
     long long files_size = 0;
     QStringList result;

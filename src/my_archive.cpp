@@ -9,7 +9,7 @@ void Archive::initFromMemoryImpl(const std::string &data) const {
     }
 }
 
-uint64_t Archive::getFileSizeImpl() const {
+[[maybe_unused]] uint64_t Archive::getFileSizeImpl() const {
     if (archive_entry_size_is_set(entry) == 0) {
         throw ArchiveErrorFile{"File size is not set"};
     }

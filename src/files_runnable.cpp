@@ -37,7 +37,6 @@ void FilesRunnable::run()
         Archive a;
         a.initFromMemoryImpl(buffer);
         while (a.nextFileImpl()) {
-            auto file_size = a.getFileSizeImpl();
             auto file_name = a.getFileNameImpl();
             std::string cur_extension = boost::locale::to_lower(
                     file_name.substr(file_name.find_last_of('.')));
