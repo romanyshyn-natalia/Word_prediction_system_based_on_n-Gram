@@ -1,6 +1,6 @@
-#include "../inc/dialog.h"
-#include "ui_dialog.h"
 #include <QThread>
+#include "dialog.h"
+#include "ui_dialog.h"
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),

@@ -4,39 +4,52 @@
 #include <vector>
 #include <string>
 
-
-class Ngram {
+template<typename T>
+class ngram {
 
 public:
-    Ngram() = default;
+    ngram() = default;
 
-    Ngram(std::vector<std::string> &context, std::string &token);
+    ngram(std::vector<T> &context_, T &token_) :
+            context(context_),
+            token(token_) {}
 
-    Ngram(const std::vector<std::string> &context, const std::string &token);
+    explicit ngram(const std::vector<T> &tokens) {
+        for (size_t i = 0; i < tokens.size() - 1; ++i) {
+            context.push_back(tokens[i]);
+        }
+        token = tokens[tokens.size() - 1];
+    }
 
-    explicit Ngram(const std::vector<std::string> &tokens);
+    ngram(const std::vector<T> &context, const T &token) :
+            context(context),
+            token(token) {}
 
-    Ngram(const Ngram &ngram) = default;
+    ~ngram() = default;
 
-    ~Ngram() = default;
+    bool operator==(const ngram &right) const {
+        for (size_t i = 0; i < context.size(); ++i) {
+            if (this->context[i] != right.context[i]) {
+                return false;
+            }
+        }
+        return this->token == right.token;
+    };
 
-    bool operator==(const Ngram &right) const;
+    ngram &operator=(const ngram &other) = default;
 
-    Ngram &operator=(const Ngram &other) = default;
 
-    std::ofstream& operator<<(std::ofstream &stream);
-
-    std::vector<std::string> getContext() const {
+    [[nodiscard]] std::vector<T> getContext() const {
         return context;
     }
 
-    std::string getToken() const {
+    [[nodiscard]] T getToken() const {
         return token;
     }
 
 private:
-    std::vector<std::string> context;
-    std::string token;
+    std::vector<T> context;
+    T token;
 };
 
 

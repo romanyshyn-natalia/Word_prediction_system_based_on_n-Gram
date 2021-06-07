@@ -5,9 +5,9 @@
 #include <string>
 #include "boost/container_hash/hash.hpp"
 
-
+template<typename T>
 struct vector_hasher {
-    std::size_t operator()(const std::vector<std::string> &input) const {
+    std::size_t operator()(const std::vector<T> &input) const {
         size_t seed = 0;
         for (const auto &word: input) {
             boost::hash_combine(seed, word);
