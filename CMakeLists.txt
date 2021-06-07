@@ -33,6 +33,7 @@ endif ()
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Boost REQUIRED COMPONENTS iostreams filesystem locale system)
 find_package(LibArchive REQUIRED)
+find_package(OpenMP REQUIRED)
 
 # Looks like it is not necessary:
 # set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
@@ -53,3 +54,4 @@ add_executable(${TARGET_NAME} ${PROJECT_RESOURCE} main.cpp ${SRC} src/main_windo
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
 target_link_libraries(n_gram LINK_PUBLIC ${LibArchive_LIBRARIES})
 target_link_libraries(n_gram LINK_PUBLIC Qt5::Widgets)
+target_link_libraries(n_gram PRIVATE OpenMP::OpenMP_CXX)

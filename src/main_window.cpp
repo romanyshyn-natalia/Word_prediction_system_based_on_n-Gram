@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->lineEdit->setCompleter(completer);
     result << "I love";
 
-    // ui->listView->setModel(str);
+    // ui->resultView->setModel(str);
 }
 
 MainWindow::~MainWindow()
@@ -174,7 +174,7 @@ void MainWindow::on_pushButton_3_clicked()
 * @param nothing.
 * @return nothing.
 */
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_startButton_clicked()
 {
     // check if user choose any files
     if (files.empty()) {
@@ -241,7 +241,7 @@ void MainWindow::on_lineEdit_editingFinished()
         std::cout << e << std::endl;
     }
     auto *str = new QStringListModel(result2);
-    ui->listView->setModel(str);
+    ui->resultView->setModel(str);
     qDebug() << "Finished!";
 }
 
