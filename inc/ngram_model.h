@@ -69,7 +69,7 @@ public:
         if (count_of_ngram == 0) return 0.0;
         // smoothing
         return (count_of_token + k) /
-               (static_cast<double>(count_of_ngram) + k * static_cast<double>(tokens_list.size())); //-V113
+               (static_cast<double>(count_of_ngram) + k * static_cast<double>(hashed_tokens.size())); //-V113
     };
 
     /*
@@ -147,7 +147,7 @@ public:
     * @return bool.
     */
     bool is_empty() {
-        return tokens_list.empty();
+        return tokens_count.empty();
     }
 
     std::unordered_map<std::vector<T>, std::vector<T>, vector_hasher<T>> context;
@@ -158,7 +158,6 @@ public:
 private:
     size_t number_of_grams;
     size_t number_of_suggestions;
-    std::set<T> tokens_list;
     std::unordered_map<ngram<T>, double, ngram_hasher<T>> probability_map;
     std::unordered_map<T, double> tokens_count;
     std::unordered_map<unsigned long, std::string> hashed_tokens;
