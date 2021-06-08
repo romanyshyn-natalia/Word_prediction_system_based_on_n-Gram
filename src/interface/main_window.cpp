@@ -137,7 +137,6 @@ void MainWindow::on_addButton_clicked()
     }
 
     ui->filesView->setUpdatesEnabled(false);
-    QString sizes = QString::number(int(files_size/1024));
     if (files_size/1024/1024 > 1)
         listModeltotal->setData(listModeltotal->index(0,1),
                                 QString::number(int(files_size/1024/1024)) + "Mb");
@@ -173,15 +172,12 @@ void MainWindow::on_deleteButton_clicked()
         listModel->removeRow(indexes.at(i).row());
     }
 
-    ui->filesView->setUpdatesEnabled(true);
-
-    ui->filesView->setUpdatesEnabled(false);
     if (files_size/1024/1024 > 1)
-        listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
-                           QString::number(files_size/1024/1024) + " Mb");
+        listModeltotal->setData(listModeltotal->index(0,1),
+                                QString::number(int(files_size/1024/1024)) + "Mb");
     else
-        listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
-                           QString::number(files_size/1024) + " Kb");
+        listModeltotal->setData(listModeltotal->index(0,1),
+                                QString::number(int(files_size/1024)) + "Kb");
     ui->sizeView->resizeColumnsToContents();
     ui->filesView->setUpdatesEnabled(true);
 }
