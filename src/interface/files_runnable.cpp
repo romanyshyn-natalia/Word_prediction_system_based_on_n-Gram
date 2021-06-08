@@ -10,7 +10,6 @@ FilesRunnable::FilesRunnable(ngram_model<unsigned long>& m_, const QString& file
 
 void FilesRunnable::run()
 {
-    std::vector<std::string> tokenized;
     auto lbm = boost::locale::localization_backend_manager::global();
     auto s = lbm.get_all_backends();
     lbm.select("icu");
@@ -20,11 +19,7 @@ void FilesRunnable::run()
 
     QFileInfo file_info(file);
     if (file_info.completeSuffix() == "txt") {
-        emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + file_info.fileName());
-        std::string text_data = read_binary_file(file.toUtf8().constData());
-        tokenized = tokenize_text(text_data);
-        m.update(tokenized);
-        emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + file_info.fileName());
+        file_token(file_info.fileName());
     } else if (file_info.completeSuffix() == "zip") {
         std::ifstream raw_file(file.toStdString(), std::ios::binary);
         auto buffer = [&raw_file] {
@@ -41,13 +36,19 @@ void FilesRunnable::run()
                 continue;
             }
             std::string data = a.getWholeFileImpl();
-            std::cout << file_name << std::endl;
             QString name = file_info.fileName() + '/' + sub_file_info.fileName();
-            emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + name);
-            tokenized = tokenize_text(data);
-            m.update(tokenized);
-            emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + name);
+            file_token(name);
         }
     }
     emit progressChanged(prog);
 }
+
+void FilesRunnable::file_token(const QString& file_name)
+{
+    std::vector<std::string> tokenized;
+    emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + file_name);
+    std::string text_data = read_binary_file(file.toUtf8().constData());
+    tokenized = tokenize_text(text_data);
+    m.update(tokenized);
+    emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + file_name);
+};

@@ -74,7 +74,7 @@ margin: 0 0;
 }</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabWidgetPage1">
        <property name="cursor">
@@ -114,7 +114,7 @@ padding:0;
               <property name="minimumSize">
                <size>
                 <width>100</width>
-                <height>100</height>
+                <height>50</height>
                </size>
               </property>
               <property name="text">
@@ -170,6 +170,9 @@ padding:0;
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton { padding: 7px; }</string>
+                </property>
                 <property name="text">
                  <string>Add files</string>
                 </property>
@@ -185,6 +188,9 @@ padding:0;
                 </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton { padding: 7px; margin-right: 10px }</string>
                 </property>
                 <property name="text">
                  <string>Delete files</string>
@@ -359,19 +365,6 @@ padding:0;
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>10</width>
-                  <height>10</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
                <widget class="QPushButton" name="startButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -381,12 +374,15 @@ padding:0;
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>120</width>
+                  <width>200</width>
                   <height>16777215</height>
                  </size>
                 </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton { padding: 5px; margin : 10px; }</string>
                 </property>
                 <property name="text">
                  <string>Start</string>
@@ -423,7 +419,7 @@ padding:0;
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true"/>
+               <string notr="true">QTableView {margin-left: 10px; }</string>
               </property>
              </widget>
             </item>
@@ -543,7 +539,7 @@ padding:0;
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

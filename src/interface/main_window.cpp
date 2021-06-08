@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QThread>
 #include <QThreadPool>
-#include "model/word_tokenizer.h"
 #include "interface/files_runnable.h"
 #include "interface/dialog.h"
 
@@ -177,8 +176,12 @@ void MainWindow::on_deleteButton_clicked()
     ui->filesView->setUpdatesEnabled(true);
 
     ui->filesView->setUpdatesEnabled(false);
-    QString sizes = QString::number(int(files_size/1024));
-    listModeltotal->setData(listModeltotal->index(0,1), sizes + "Kb");
+    if (files_size/1024/1024 > 1)
+        listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
+                           QString::number(files_size/1024/1024) + " Mb");
+    else
+        listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
+                           QString::number(files_size/1024) + " Kb");
     ui->sizeView->resizeColumnsToContents();
     ui->filesView->setUpdatesEnabled(true);
 }
@@ -207,6 +210,7 @@ void MainWindow::on_startButton_clicked()
 
     // create dialog window
     auto* dialog = new Dialog();
+    dialog->setWindowTitle("Tokenizing progress");
 
     QThreadPool* pool = QThreadPool::globalInstance();
     pool->setMaxThreadCount(threads);
@@ -240,6 +244,7 @@ void MainWindow::on_lineEdit_editingFinished()
 
     // check if user input or model is empty
     if (user_input.empty() || m.is_empty()) {
+        QMessageBox::warning(this, "=(", "You forgot to feed the cat!");
         return;
     }
 
