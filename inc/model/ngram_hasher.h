@@ -2,7 +2,7 @@
 #define N_GRAM_NGRAM_HASHER_H
 
 #include "boost/container_hash/hash.hpp"
-#include "ngram.h"
+#include "model/ngram.h"
 
 template <typename T>
 struct ngram_hasher {

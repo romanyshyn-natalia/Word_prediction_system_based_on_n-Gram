@@ -3,8 +3,8 @@
 #include <QRunnable>
 #include <QDebug>
 #include <QThread>
-#include "ngram_model.h"
-#include "word_tokenizer.h"
+#include "model/ngram_model.h"
+#include "model/word_tokenizer.h"
 
 class FilesRunnable : public QObject, public QRunnable
 {

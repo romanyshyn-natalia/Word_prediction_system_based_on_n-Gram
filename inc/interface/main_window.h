@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
-#include "ngram_model.h"
+#include "model/ngram_model.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

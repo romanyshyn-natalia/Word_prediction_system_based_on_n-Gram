@@ -1,4 +1,4 @@
-#include "main_window.h"
+#include "interface/main_window.h"
 #include "ui_main_window.h"
 #include <QFileDialog>
 #include <QMessageBox>
@@ -8,9 +8,10 @@
 #include <QDebug>
 #include <QThread>
 #include <QThreadPool>
-#include "word_tokenizer.h"
-#include "files_runnable.h"
-#include "dialog.h"
+#include "model/word_tokenizer.h"
+#include "interface/files_runnable.h"
+#include "interface/dialog.h"
+
 
 #define PRINT_HINTS
 
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
 
     /* *******  PAGE 1   ******* */
 

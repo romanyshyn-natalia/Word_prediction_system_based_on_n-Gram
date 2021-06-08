@@ -1,14 +1,16 @@
-#include "main_window.h"
+#include "interface/main_window.h"
 #include <QApplication>
 #include <QFile>
+
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QDebug>
+#include <QSqlQueryModel>
+#include "QSqlError"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    QFont f = a.font();
-//    f.setFamily("Monaco");
-//    f.setPointSize(22);
-//    a.setFont(f);
     MainWindow w;
     QApplication::setWindowIcon(QIcon(":/qt.png"));
     w.setWindowTitle("N-gram");

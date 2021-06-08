@@ -1,7 +1,7 @@
-#include "files_runnable.h"
+#include "interface/files_runnable.h"
 #include <QTime>
 #include <boost/filesystem.hpp>
-#include "my_archive.h"
+#include "interface/archieve_reader.h"
 
 FilesRunnable::FilesRunnable(ngram_model<unsigned long>& m_, const QString& file_, double prog_) :
         m(m_), file(file_), prog(prog_)

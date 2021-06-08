@@ -1,5 +1,5 @@
 #include <QThread>
-#include "dialog.h"
+#include "interface/dialog.h"
 #include "ui_dialog.h"
 
 Dialog::Dialog(QWidget *parent) :

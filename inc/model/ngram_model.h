@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
-#include "ngram_hasher.h"
+#include "model/ngram_hasher.h"
 #include "vector_hasher.h"
 #include "word_tokenizer.h"
 
