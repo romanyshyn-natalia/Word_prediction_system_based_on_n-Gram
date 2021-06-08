@@ -1,5 +1,6 @@
 #include "interface/files_runnable.h"
 #include <QTime>
+#include <QFileInfo>
 #include <boost/filesystem.hpp>
 #include "interface/archieve_reader.h"
 
@@ -9,9 +10,6 @@ FilesRunnable::FilesRunnable(ngram_model<unsigned long>& m_, const QString& file
 
 void FilesRunnable::run()
 {
-    qDebug() << "Hello world from thread" << QThread::currentThread();
-    qDebug() << QTime::currentTime();
-
     std::vector<std::string> tokenized;
     auto lbm = boost::locale::localization_backend_manager::global();
     auto s = lbm.get_all_backends();
@@ -20,14 +18,14 @@ void FilesRunnable::run()
     boost::locale::generator g;
     std::locale::global(g(""));
 
-
-    if (file.split('.')[1] == "txt") {
-        emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + file.split('/').back());
+    QFileInfo fileInfo(file);
+    if (fileInfo.completeSuffix() == "txt") {
+        emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + fileInfo.fileName());
         std::string text_data = read_binary_file(file.toUtf8().constData());
         tokenized = tokenize_text(text_data);
         m.update(tokenized);
-        emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + file.split('/').back());
-    } else if (file.split('.')[1] == "zip") {
+        emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + fileInfo.fileName());
+    } else if (fileInfo.completeSuffix() == "zip") {
         std::ifstream raw_file(file.toStdString(), std::ios::binary);
         auto buffer = [&raw_file] {
             std::ostringstream ss{};
@@ -46,7 +44,7 @@ void FilesRunnable::run()
             }
             std::string data = a.getWholeFileImpl();
             std::cout << file_name << std::endl;
-            QString name = file.split('/').back() + '/' + QString::fromUtf8(file_name.c_str());
+            QString name = fileInfo.fileName() + '/' + QString::fromUtf8(file_name.c_str());
             emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + name);
             tokenized = tokenize_text(data);
             m.update(tokenized);
