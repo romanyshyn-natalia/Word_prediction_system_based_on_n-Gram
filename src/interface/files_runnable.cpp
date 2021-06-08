@@ -18,14 +18,14 @@ void FilesRunnable::run()
     boost::locale::generator g;
     std::locale::global(g(""));
 
-    QFileInfo fileInfo(file);
-    if (fileInfo.completeSuffix() == "txt") {
-        emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + fileInfo.fileName());
+    QFileInfo file_info(file);
+    if (file_info.completeSuffix() == "txt") {
+        emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + file_info.fileName());
         std::string text_data = read_binary_file(file.toUtf8().constData());
         tokenized = tokenize_text(text_data);
         m.update(tokenized);
-        emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + fileInfo.fileName());
-    } else if (fileInfo.completeSuffix() == "zip") {
+        emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + file_info.fileName());
+    } else if (file_info.completeSuffix() == "zip") {
         std::ifstream raw_file(file.toStdString(), std::ios::binary);
         auto buffer = [&raw_file] {
             std::ostringstream ss{};
@@ -36,15 +36,13 @@ void FilesRunnable::run()
         a.initFromMemoryImpl(buffer);
         while (a.nextFileImpl()) {
             auto file_name = a.getFileNameImpl();
-            std::string cur_extension = boost::locale::to_lower(
-                    file_name.substr(file_name.find_last_of('.')));
-            std::cout << cur_extension << std::endl;
-            if (cur_extension != ".txt") {
+            QFileInfo sub_file_info(QString::fromUtf8(file_name.c_str()));
+            if (sub_file_info.completeSuffix() != "txt") {
                 continue;
             }
             std::string data = a.getWholeFileImpl();
             std::cout << file_name << std::endl;
-            QString name = fileInfo.fileName() + '/' + QString::fromUtf8(file_name.c_str());
+            QString name = file_info.fileName() + '/' + sub_file_info.fileName();
             emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + name);
             tokenized = tokenize_text(data);
             m.update(tokenized);
