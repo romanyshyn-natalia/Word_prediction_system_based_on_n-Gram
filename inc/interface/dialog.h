@@ -19,7 +19,7 @@ public:
 
 
 public slots:
-    void progress(int);
+    void progress(const double&);
     void files_output(const QString&);
 
 signals:
@@ -32,6 +32,7 @@ private slots:
 
 private:
     Ui::Dialog *ui;
+    double total_progress = 0;
 };
 
 #endif // DIALOG_H

@@ -1,5 +1,5 @@
-#ifndef FILESRUNNABLE_H
-#define FILESRUNNABLE_H
+#ifndef FILES_RUNNABLE_H
+#define FILES_RUNNABLE_H
 #include <QRunnable>
 #include <QDebug>
 #include <QThread>
@@ -10,7 +10,7 @@ class FilesRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    FilesRunnable(ngram_model<unsigned long>& m_, const QString& file_, double prog_);
+    FilesRunnable(ngram_model<unsigned long>& m_, const QString& file_, double progress_);
     void run() override;
     void file_token(const std::string& text, const QString& file_name);
 
@@ -21,7 +21,7 @@ signals:
 private:
     ngram_model<unsigned long>& m;
     const QString& file;
-    double prog;
+    double progress;
 };
 
-#endif // FILESRUNNABLE_H
+#endif // FILES_RUNNABLE_H

@@ -4,19 +4,12 @@
 #include <boost/filesystem.hpp>
 #include "interface/archieve_reader.h"
 
-FilesRunnable::FilesRunnable(ngram_model<unsigned long>& m_, const QString& file_, double prog_) :
-        m(m_), file(file_), prog(prog_)
+FilesRunnable::FilesRunnable(ngram_model<unsigned long>& m_, const QString& file_, double progress_) :
+        m(m_), file(file_), progress(progress_)
 { }
 
 void FilesRunnable::run()
 {
-    auto lbm = boost::locale::localization_backend_manager::global();
-    auto s = lbm.get_all_backends();
-    lbm.select("icu");
-    boost::locale::localization_backend_manager::global(lbm);
-    boost::locale::generator g;
-    std::locale::global(g(""));
-
     QFileInfo file_info(file);
     if (file_info.completeSuffix() == "txt") {
         std::string text_data = read_binary_file(file.toUtf8().constData());
@@ -41,7 +34,7 @@ void FilesRunnable::run()
             file_token(data, name);
         }
     }
-    emit progressChanged(prog);
+    emit progressChanged(progress);
 }
 
 void FilesRunnable::file_token(const std::string& text, const QString& file_name)

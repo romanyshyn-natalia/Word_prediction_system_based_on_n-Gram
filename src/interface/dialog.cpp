@@ -1,4 +1,5 @@
 #include <QThread>
+#include <cmath>
 #include "interface/dialog.h"
 #include "ui_dialog.h"
 
@@ -15,13 +16,14 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::progress(int prog) {
-    if (ui->progressBar->value() + prog >= 96) {
+void Dialog::progress(const double& progress) {
+    total_progress = total_progress + progress;
+    if (total_progress >= 99) {
         ui->progressBar->setValue(100);
         ui->finishButton->setEnabled(true);
     }
     else
-        ui->progressBar->setValue(ui->progressBar->value() + prog);
+        ui->progressBar->setValue(std::ceil(total_progress));
 }
 
 void Dialog::files_output(const QString& text) {

@@ -172,6 +172,12 @@ font-size: 18px;
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="cursor">
                  <cursorShape>PointingHandCursor</cursorShape>
                 </property>
@@ -180,6 +186,28 @@ font-size: 18px;
                 </property>
                 <property name="text">
                  <string>Add files</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="dirButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton { padding: 7px; }</string>
+                </property>
+                <property name="text">
+                 <string>Add directory</string>
                 </property>
                </widget>
               </item>
@@ -623,7 +651,7 @@ font-size: 25px;
      <x>0</x>
      <y>0</y>
      <width>1400</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QThread>
 #include <QThreadPool>
+#include <QDirIterator>
 #include "interface/files_runnable.h"
 #include "interface/dialog.h"
 
@@ -19,6 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    auto lbm = boost::locale::localization_backend_manager::global();
+    lbm.select("icu");
+    boost::locale::localization_backend_manager::global(lbm);
+    boost::locale::generator g;
+    std::locale::global(g(""));
 
 
     /* *******  PAGE 1   ******* */
@@ -81,61 +88,56 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 /*
-* Add files.
+* Helper function. Take path to file check if file' size doesn't
+* exceed free memory on computer if doesn't - add it to other files, if does - return -1.
+* @param path to file.
+* @return success in adding new file.
+*/
+int MainWindow::add_file(const QString& name)
+{
+    QStorageInfo storage = QStorageInfo::root();
+    QFile file(name);
+    if (!file.open(QFile::ReadOnly)) {
+        QMessageBox::warning(this, "Warning", "Error while opening file!");
+    }
+
+    // check if we have enough space
+    files_size += file.size();
+    if (storage.bytesAvailable() < files_size) {
+        QMessageBox::warning(this, "Warning", "Not enough space on your computer");
+        files_size -= file.size();
+        return -1;
+    }
+    files.append(name);
+
+    // insert new file name, its size into the table & change total size
+    if(listModel->insertRow(listModel->rowCount())) {
+        ui->filesView->setUpdatesEnabled(false);
+        listModel->insertRow(listModel->rowCount() + 1);
+        QFileInfo fileInfo(file.fileName());
+        QString size = QString::number(file.size()/1024);
+        QString info = fileInfo.fileName();
+        listModel->setData(listModel->index(listModel->rowCount() - 1, 0), info);
+        if (file.size()/1024/1024 > 1)
+            listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
+                               QString::number(file.size()/1024/1024) + " Mb");
+        else
+            listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
+                               QString::number(file.size()/1024) + " Kb");
+        ui->filesView->setUpdatesEnabled(true);
+    }
+    return 0;
+}
+
+/*
+* Change total size of files in ui.
 * @param nothing.
 * @return nothing.
 */
-void MainWindow::on_addButton_clicked()
+void MainWindow::change_total_size()
 {
-    QStorageInfo storage = QStorageInfo::root();
-    if (storage.isReadOnly())
-#ifdef PRINT_HINTS
-        qDebug() << "isReadOnly:" << storage.isReadOnly();
-    qDebug() << "availableSize:" << storage.bytesAvailable();
-#endif //PRINT_HINTS
-
-    // set allowed for users files and open file dialog
-    QString filter = "All files (*.txt *.zip)";
-    QStringList file_name = QFileDialog::getOpenFileNames(this, "Choose files", QDir::homePath(), filter);
-
-    // if the user has selected files - add their names to the list and change total size
-    if (file_name.empty()) {
-        return;
-    }
-    for (QString &el : file_name) {
-        QFile file(el);
-        if (!file.open(QFile::ReadOnly)) {
-            QMessageBox::warning(this, "Warning", "Error while opening file!");
-        }
-
-        // check if we have enough space
-        files_size += file.size();
-        if (storage.bytesAvailable() < files_size) {
-            QMessageBox::warning(this, "Warning", "Not enough space on your computer");
-            files_size -= file.size();
-            break;
-        }
-        files.append(el);
-
-        // insert new file name, its size into the table & change total size
-        if(listModel->insertRow(listModel->rowCount())) {
-            ui->filesView->setUpdatesEnabled(false);
-            listModel->insertRow(listModel->rowCount() + 1);
-            QFileInfo fileInfo(file.fileName());
-            QString size = QString::number(file.size()/1024);
-            QString info = fileInfo.fileName();
-            listModel->setData(listModel->index(listModel->rowCount() - 1, 0), info);
-            if (file.size()/1024/1024 > 1)
-                listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
-                                   QString::number(file.size()/1024/1024) + " Mb");
-            else
-                listModel->setData(listModel->index(listModel->rowCount() - 1, 1),
-                                   QString::number(file.size()/1024) + " Kb");
-            ui->filesView->setUpdatesEnabled(true);
-        }
-    }
-
     ui->filesView->setUpdatesEnabled(false);
     if (files_size/1024/1024 > 1)
         listModeltotal->setData(listModeltotal->index(0,1),
@@ -147,8 +149,63 @@ void MainWindow::on_addButton_clicked()
     ui->filesView->setUpdatesEnabled(true);
 
 #ifdef PRINT_HINTS
-    qDebug() << "Files size" << files_size;
+    qDebug() << "Files size:" << files_size;
 #endif //PRINT_HINTS
+}
+
+/*
+* Add files.
+* @param nothing.
+* @return nothing.
+*/
+void MainWindow::on_addButton_clicked()
+{
+    QStorageInfo storage = QStorageInfo::root();
+#ifdef PRINT_HINTS
+    if (storage.isReadOnly())
+        qDebug() << "isReadOnly:" << storage.isReadOnly();
+    qDebug() << "availableSize:" << storage.bytesAvailable();
+#endif //PRINT_HINTS
+
+    // set allowed for users files and open file dialog
+    QString filter = "All files (*.txt *.zip)";
+    QStringList file_name = QFileDialog::getOpenFileNames(this, "Open files", QDir::homePath(), filter);
+
+    // if the user has selected files - add their names to the list and change total size
+    if (file_name.empty()) {
+        return;
+    }
+    for (QString &el : file_name) {
+        int res = add_file(el);
+        if (res == -1)
+            break;
+    }
+    change_total_size();
+}
+
+/*
+* Add files from the chosen folder.
+* @param nothing.
+* @return nothing.
+*/
+void MainWindow::on_dirButton_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                    QDir::homePath(),
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+    QDirIterator it(dir, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+        if (it.fileInfo().completeSuffix() == "txt" || it.fileInfo().completeSuffix() == "zip") {
+            int res = add_file(it.filePath());
+            if (res == -1)
+                break;
+        } else {
+            continue;
+        }
+    }
+    change_total_size();
 }
 
 /*
@@ -172,13 +229,7 @@ void MainWindow::on_deleteButton_clicked()
         listModel->removeRow(indexes.at(i).row());
     }
 
-    if (files_size/1024/1024 > 1)
-        listModeltotal->setData(listModeltotal->index(0,1),
-                                QString::number(int(files_size/1024/1024)) + "Mb");
-    else
-        listModeltotal->setData(listModeltotal->index(0,1),
-                                QString::number(int(files_size/1024)) + "Kb");
-    ui->sizeView->resizeColumnsToContents();
+    change_total_size();
     ui->filesView->setUpdatesEnabled(true);
 }
 
@@ -214,8 +265,9 @@ void MainWindow::on_startButton_clicked()
     int idx = 0;
     while (idx < files.size()) {
         QFile file(files[idx]);
-        auto prog = ( file.size() * 100 ) / files_size;
-        auto *t = new FilesRunnable(std::ref(m), std::ref(files[idx++]), prog);
+        auto progress = ( file.size() * 100.0 ) / files_size;
+        qDebug() << progress;
+        auto *t = new FilesRunnable(std::ref(m), std::ref(files[idx++]), progress);
         pool->start(t);
         QObject::connect(t, &FilesRunnable::progressChanged, dialog, &Dialog::progress);
         QObject::connect(t, &FilesRunnable::textChanged, dialog, &Dialog::files_output);
@@ -248,7 +300,6 @@ void MainWindow::on_lineEdit_editingFinished()
 
     // check if user input or model is empty
     if (user_input.empty() || m.is_empty()) {
-        QMessageBox::warning(this, "=(", "You forgot to feed the cat!");
         return;
     }
 
@@ -275,6 +326,12 @@ void MainWindow::on_lineEdit_editingFinished()
 #endif //PRINT_HINTS
 }
 
+/*
+* When user click on suggested word add it
+* to input string and return new suggestions.
+* @param index of chosen word.
+* @return nothing.
+*/
 void MainWindow::on_resultView_doubleClicked(const QModelIndex &index)
 {
     int row = index.row();

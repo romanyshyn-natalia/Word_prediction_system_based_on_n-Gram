@@ -23,6 +23,8 @@ signals:
 private slots:
     void on_addButton_clicked();
 
+    void on_dirButton_clicked();
+
     void on_deleteButton_clicked();
 
     void on_startButton_clicked();
@@ -30,6 +32,10 @@ private slots:
     void on_lineEdit_editingFinished();
 
     void on_resultView_doubleClicked(const QModelIndex &index);
+
+    void change_total_size();
+
+    int add_file(const QString& name);
 
 private:
     Ui::MainWindow *ui;
