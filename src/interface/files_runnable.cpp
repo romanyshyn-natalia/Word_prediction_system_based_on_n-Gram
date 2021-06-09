@@ -19,7 +19,8 @@ void FilesRunnable::run()
 
     QFileInfo file_info(file);
     if (file_info.completeSuffix() == "txt") {
-        file_token(file_info.fileName());
+        std::string text_data = read_binary_file(file.toUtf8().constData());
+        file_token(text_data, file_info.fileName());
     } else if (file_info.completeSuffix() == "zip") {
         std::ifstream raw_file(file.toStdString(), std::ios::binary);
         auto buffer = [&raw_file] {
@@ -37,18 +38,17 @@ void FilesRunnable::run()
             }
             std::string data = a.getWholeFileImpl();
             QString name = file_info.fileName() + '/' + sub_file_info.fileName();
-            file_token(name);
+            file_token(data, name);
         }
     }
     emit progressChanged(prog);
 }
 
-void FilesRunnable::file_token(const QString& file_name)
+void FilesRunnable::file_token(const std::string& text, const QString& file_name)
 {
     std::vector<std::string> tokenized;
     emit textChanged(QTime::currentTime().toString() + " : Start tokenizing file: " + file_name);
-    std::string text_data = read_binary_file(file.toUtf8().constData());
-    tokenized = tokenize_text(text_data);
+    tokenized = tokenize_text(text);
     m.update(tokenized);
     emit textChanged(QTime::currentTime().toString() + " : End tokenizing file: " + file_name);
 };

@@ -141,6 +141,26 @@ public:
         return result_words;
     };
 
+    std::vector<std::pair<ngram<std::string>, double>> frequent_ngram(const size_t num_ngrams){
+        std::vector<std::pair<ngram<T>, double>> most_frequent(num_ngrams);
+        std::partial_sort_copy(ngram_count.begin(), ngram_count.end(),
+                               most_frequent.begin(), most_frequent.end(),
+                               [](auto &left, auto &right) {
+                                   return left.second > right.second;
+                               });
+        std::vector<std::pair<ngram<std::string>, double>> result;
+        for (const auto &t: most_frequent) {
+            std::vector<std::string> new_context;
+            for (const auto &w: t.first.getContext()) {
+                new_context.template emplace_back(hashed_tokens[w]);
+            }
+            ngram<std::string> new_ngram(new_context, hashed_tokens[t.first.getToken()]);
+            std::pair<ngram<std::string>, double> new_entry{new_ngram, t.second};
+            result.emplace_back(new_entry);
+        }
+        return result;
+    }
+
     /*
     * Checks whether the model is empty.
     * @param nothing.

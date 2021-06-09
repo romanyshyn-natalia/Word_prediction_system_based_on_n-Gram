@@ -223,6 +223,14 @@ void MainWindow::on_startButton_clicked()
     dialog->exec();
     pool->clear();
 
+    auto freq_ngrams = m.frequent_ngram(20);
+    for (const auto &n: freq_ngrams) {
+        for (const auto &word: n.first.getContext()) {
+            std::cout << word << " ";
+        }
+        std::cout << n.first.getToken() << " - " << n.second << std::endl;
+    }
+
 #ifdef PRINT_HINTS
     qDebug() << "Close dialog!";
 #endif //PRINT_HINTS
