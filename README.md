@@ -10,6 +10,10 @@ the user starts inputing text and our interface suggests possible endings of the
 
 Moreover, there are statistical data on the corpus uploaded, such as the most popular n-grams.
 
+We have implemented three algorithms: the simple one, which works with strings (words) themselves,
+the one that works with string's hashes and the one that uses database. For our final release, we
+chose the best one.
+
 ## Requirements
 
 To run the program:
