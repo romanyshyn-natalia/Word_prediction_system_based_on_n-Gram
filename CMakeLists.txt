@@ -35,8 +35,8 @@ find_package(OpenMP REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Sql REQUIRED)
 
 # Looks like it is not necessary:
-# set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
-# set(Boost_USE_MULTITHREAD ON)  # enable multithreading
+set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
+set(Boost_USE_MULTITHREAD ON)  # enable multithreading
 
 include_directories(inc)
 include_directories(${LIBARCHIVE_INCLUDE_DIR})
