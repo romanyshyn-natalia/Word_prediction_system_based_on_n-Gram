@@ -37,8 +37,8 @@ public:
         new_tokens.insert(new_tokens.begin(), number_of_grams - 1, "<s>");
         auto new_hashed = tokens_hasher(new_tokens);
 
-        QString query_str = "INSERT INTO word (word_id, word_v) VALUES";
-//        auto *query_word = new QSqlQuery(db);
+        QString query_str = "";
+        auto *query_word = new QSqlQuery(db);
         for (const auto &word : new_hashed) {
             query_str += "(" + QString::number(word.first) + ",";
             QString wor = QString::fromStdString(word.second);
@@ -48,10 +48,13 @@ public:
         if (!query_str.isEmpty()) {
             query_str.chop(1);
         }
-        query_str += "ON CONFLICT (word_id) DO NOTHING;";
-//        if (!query_word->exec()) {
-//            qDebug() << query_word->lastError().text();
-//        };
+        query_word->prepare("\n"
+                            "INSERT INTO word (word_id, word_v)\n"
+                            "VALUES" + query_str +
+                            "ON CONFLICT (word_id) DO NOTHING;");
+        if (!query_word->exec()) {
+            qDebug() << query_word->lastError().text();
+        };
         std::vector<unsigned long> hash_tokens = hashed_text(new_tokens);
 
 // #pragma omp parallel for shared(hash_tokens) default (none)
@@ -61,17 +64,17 @@ public:
                 tokens_count[hash_tokens[i]]++;
             }
             std::vector<unsigned long> history;
-//            auto *query_context = new QSqlQuery(db);
-//            query_str = "";
+            auto *query_context = new QSqlQuery(db);
+            query_str = "";
             int num = static_cast<int>(number_of_grams) - 1;
 
             std::unordered_map<unsigned int, size_t> dict_cont_ids;
             for (int p = num - 1; p >= 0; --p) {
-                QSqlQuery query_check(
+                QSqlQuery query(
                         "SELECT context_id FROM context WHERE orders = " + QString::number(num - p) + " AND words = " +
                         QString::number(hash_tokens[i - p - 1]));
-                while (query_check.next()) {
-                    unsigned long temp_id = (unsigned long) query_check.value(0).toULongLong();
+                while (query.next()) {
+                    unsigned long temp_id = (unsigned long) query.value(0).toULongLong();
                     if (dict_cont_ids.find(temp_id) == dict_cont_ids.end()) {
                         dict_cont_ids.insert({temp_id, 1});
                     } else {
@@ -86,17 +89,17 @@ public:
                     break;
                 }
             }
-            auto *query = new QSqlQuery(db);
             if (cont_id != 0) {
                 for (int p = num - 1; p >= 0; --p) {
                     history.push_back(hash_tokens[i - p - 1]);
                 }
                 ngram<unsigned long> ngram(history, hash_tokens[i]);
-                query_str += "INSERT INTO grams (context_id, token_id) VALUES (" + QString::number(cont_id) + "," +
-                             QString::number(hash_tokens[i]) + ");";
-                query->prepare(query_str);
-                if (!query->exec()) {
-                    qDebug() << query->lastError().text();
+                auto *query_grams = new QSqlQuery(db);
+                query_grams->prepare(
+                        "INSERT INTO grams (context_id, token_id) VALUES (" + QString::number(cont_id) + "," +
+                        QString::number(hash_tokens[i]) + ");");
+                if (!query_grams->exec()) {
+                    qDebug() << query_grams->lastError().text();
                 }
                 std::vector<unsigned long> new_context{ngram.getContext()};
 // #pragma omp critical
@@ -105,7 +108,6 @@ public:
                     context[new_context].push_back(ngram.getToken());
                 }
             } else {
-                query_str += " INSERT INTO context (context_id, orders, words) VALUES ";
                 for (int p = num - 1; p >= 0; --p) {
                     history.push_back(hash_tokens[i - p - 1]);
                     query_str += "(" + QString::number(context_count) + "," + QString::number(num - p) + "," +
@@ -114,20 +116,18 @@ public:
                 if (!query_str.isEmpty()) {
                     query_str.chop(1);
                 }
-                query_str += ";";
-//                query_context->prepare("INSERT INTO context (context_id, orders, words) VALUES " + query_str + ";");
-//                if (!query_context->exec()) {
-//                    qDebug() << query_context->lastError().text();
-//                };
-
+                query_context->prepare("INSERT INTO context (context_id, orders, words) VALUES " + query_str + ";");
+                if (!query_context->exec()) {
+                    qDebug() << query_context->lastError().text();
+                };
 
                 ngram<unsigned long> ngram(history, hash_tokens[i]);
-//                auto *query_grams = new QSqlQuery(db);
-                query_str += "INSERT INTO grams (context_id, token_id) VALUES (" + QString::number(context_count) + "," +
-                             QString::number(hash_tokens[i]) + ");";
-                query->prepare(query_str);
-                if (!query->exec()) {
-                    qDebug() << query->lastError().text();
+                auto *query_grams = new QSqlQuery(db);
+                query_grams->prepare(
+                        "INSERT INTO grams (context_id, token_id) VALUES (" + QString::number(context_count) + "," +
+                        QString::number(hash_tokens[i]) + ");");
+                if (!query_grams->exec()) {
+                    qDebug() << query_grams->lastError().text();
                 }
                 context_count++;
                 std::vector<unsigned long> new_context{ngram.getContext()};
