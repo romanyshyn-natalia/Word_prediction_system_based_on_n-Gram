@@ -21,11 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    auto lbm = boost::locale::localization_backend_manager::global();
-    lbm.select("icu");
-    boost::locale::localization_backend_manager::global(lbm);
-    boost::locale::generator g;
-    std::locale::global(g(""));
+//    auto lbm = boost::locale::localization_backend_manager::global();
+//    lbm.select("icu");
+//    boost::locale::localization_backend_manager::global(lbm);
+//    boost::locale::generator g;
+//    std::locale::global(g(""));
 
 
     /* *******  PAGE 1   ******* */

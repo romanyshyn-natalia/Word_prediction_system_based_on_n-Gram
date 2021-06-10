@@ -10,6 +10,11 @@ FilesRunnable::FilesRunnable(ngram_model<unsigned long>& m_, const QString& file
 
 void FilesRunnable::run()
 {
+    auto lbm = boost::locale::localization_backend_manager::global();
+    lbm.select("icu");
+    boost::locale::localization_backend_manager::global(lbm);
+    boost::locale::generator g;
+    std::locale::global(g(""));
     QFileInfo file_info(file);
     if (file_info.completeSuffix() == "txt") {
         std::string text_data = read_binary_file(file.toUtf8().constData());

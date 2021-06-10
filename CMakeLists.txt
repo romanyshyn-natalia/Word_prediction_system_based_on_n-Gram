@@ -50,8 +50,11 @@ add_executable(${TARGET_NAME} ${PROJECT_RESOURCE} main.cpp ${SRC} src/interface/
         inc/interface/files_runnable.h src/interface/files_runnable.cpp inc/interface/archieve_reader.h src/interface/archieve_reader.cpp
         src/interface/dialog.cpp src/interface/dialog.ui inc/interface/dialog.h)
 
+add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
 target_link_libraries(n_gram LINK_PUBLIC ${LibArchive_LIBRARIES})
 target_link_libraries(n_gram LINK_PUBLIC Qt5::Widgets)
 target_link_libraries(n_gram LINK_PUBLIC Qt5::Sql)
 target_link_libraries(n_gram PRIVATE OpenMP::OpenMP_CXX)
+
