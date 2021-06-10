@@ -253,6 +253,9 @@ void MainWindow::on_startButton_clicked()
         QMessageBox::warning(this, "Warning", "Choose file!");
         return;
     }
+    ui->lineEdit->clear();
+    auto *str = new QStringListModel();
+    ui->resultView->setModel(str);
 
     size_t n_grams = ui->gramBox->value();
     size_t suggestions = ui->wordsBox->value();
@@ -272,7 +275,6 @@ void MainWindow::on_startButton_clicked()
     while (idx < files.size()) {
         QFile file(files[idx]);
         auto progress = ( file.size() * 100.0 ) / files_size;
-        qDebug() << progress;
         auto *t = new FilesRunnable(std::ref(m), std::ref(files[idx++]), progress);
         pool->start(t);
         QObject::connect(t, &FilesRunnable::progressChanged, dialog, &Dialog::progress);
