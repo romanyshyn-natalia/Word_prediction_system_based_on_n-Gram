@@ -41,6 +41,7 @@ private:
     Ui::MainWindow *ui;
     QStandardItemModel *listModel = new QStandardItemModel();
     QStandardItemModel *listModeltotal = new QStandardItemModel();
+    QStandardItemModel *res_model = new QStandardItemModel();
     QList<QString> files;
     long long files_size = 0;
     QStringList result;

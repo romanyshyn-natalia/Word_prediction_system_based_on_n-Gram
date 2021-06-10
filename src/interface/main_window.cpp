@@ -13,7 +13,7 @@
 #include "interface/dialog.h"
 
 
-#define PRINT_HINTS
+// #define PRINT_HINTS
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,11 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-//    auto lbm = boost::locale::localization_backend_manager::global();
-//    lbm.select("icu");
-//    boost::locale::localization_backend_manager::global(lbm);
-//    boost::locale::generator g;
-//    std::locale::global(g(""));
+    auto lbm = boost::locale::localization_backend_manager::global();
+    lbm.select("icu");
+    boost::locale::localization_backend_manager::global(lbm);
+    boost::locale::generator g;
+    std::locale::global(g(""));
 
 
     /* *******  PAGE 1   ******* */
@@ -66,6 +66,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->sizeView->setSelectionMode(QAbstractItemView::MultiSelection);
     ui->sizeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableView->setModel(res_model);
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->setSelectionMode(QAbstractItemView::MultiSelection);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     /* *******  PAGE 2   ******* */
 
     // set image on page 2
@@ -77,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tabWidget->setTabText(0, "Main");
     ui->tabWidget->setTabText(1, "Test");
 
-    ui->resultView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->resultView->setSelectionMode(QAbstractItemView::NoSelection);
     ui->resultView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->resultView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -275,13 +281,30 @@ void MainWindow::on_startButton_clicked()
     dialog->exec();
     pool->clear();
 
+    ui->tableView->setUpdatesEnabled(false);
+    res_model->clear();
+    res_model->insertColumns(0,2);
+    res_model->setHeaderData(0,Qt::Horizontal,QStringLiteral("Ngram"));
+    res_model->setHeaderData(1,Qt::Horizontal,QStringLiteral("Frequency"));
+
     auto freq_ngrams = m.frequent_ngram(20);
     for (const auto &n: freq_ngrams) {
+        QString temp_word;
         for (const auto &word: n.first.getContext()) {
-            std::cout << word << " ";
+            temp_word.push_back(QString::fromStdString(word) +  " ");
         }
-        std::cout << n.first.getToken() << " - " << n.second << std::endl;
+        if(res_model->insertRow(res_model->rowCount())) {
+#ifdef PRINT_HINTS
+            std::cout << n.first.getToken() << " - " << n.second << std::endl;
+#endif //PRINT_HINTS
+            res_model->insertRow(res_model->rowCount() + 1);
+            res_model->setData(res_model->index(res_model->rowCount() - 1, 0),
+                               temp_word + " " + QString::fromStdString(n.first.getToken()));
+            res_model->setData(res_model->index(res_model->rowCount() - 1, 1),
+                               QString::number(n.second));
+        }
     }
+        ui->tableView->setUpdatesEnabled(true);
 
 #ifdef PRINT_HINTS
     qDebug() << "Close dialog!";
