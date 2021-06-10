@@ -14,7 +14,7 @@ We have implemented three algorithms: the simple one, which works with strings (
 the one that works with string's hashes and the one that uses database. For our final release, we
 chose the best one.
 
-![cute cat image](https://user-images.githubusercontent.com/54356826/121506811-c20c8f80-c9ec-11eb-8bce-8325a85aced9.png)
+<img src="https://user-images.githubusercontent.com/54356826/121506811-c20c8f80-c9ec-11eb-8bce-8325a85aced9.png" width="200" height="200" />
 
 ## Requirements
 
