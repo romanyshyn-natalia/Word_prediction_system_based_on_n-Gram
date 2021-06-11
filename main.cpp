@@ -3,6 +3,7 @@
 #include "ngram_model.h"
 #include "word_tokenizer.h"
 #include "time_measuring.h"
+#include <sys/resource.h>
 
 
 int main() {
@@ -23,27 +24,6 @@ int main() {
     db.setPassword("postgres");
     db.setUserName("postgres");
 
-    if(db.open()) {
-        qDebug() << "Open!!!";
-        QSqlQuery query("DROP TABLE IF EXISTS word;"
-                       "DROP TABLE IF EXISTS context;"
-                       "DROP TABLE IF EXISTS grams;"
-                       "CREATE TABLE word ("
-                       "  word_id BigInt primary key,"
-                       "  word_v TEXT"
-                       ");"
-                       "CREATE TABLE context ("
-                       "  context_id BigInt NOT NULL,"
-                       "  orders BigInt NOT NULL,"
-                       "  words BigInt NOT NULL"
-                       ");"
-                       "CREATE TABLE grams ("
-                       "  context_id BigInt NOT NULL,"
-                       "  token_id BigInt NOT NULL"
-                       ");");
-        std::cout << "END" << std::endl;
-    }
-
     std::vector<std::string> tokenized;
     std::cout << "Reading the file..." << std::endl;
     std::string text_data = read_binary_file("../resources/51.txt");
@@ -51,91 +31,39 @@ int main() {
     tokenized = tokenize_text(text_data);
 
     std::string str_n_grams, str_suggestions, str_k;
-    size_t n_grams, suggestions;
-    double k;
 
-    std::cout << "Enter number of grams: " << std::endl << "\t";
-    std::getline(std::cin, str_n_grams);
-    std::cin.clear();
-    try {
-        n_grams = std::stoi(str_n_grams);
-    } catch (int ex) {
-        std::cout << "Incorrect input." << std::endl;
-    }
-    if (n_grams < 2) {
-        std::cout << "Incorrect number of grams." << std::endl;
-    }
-
-    std::cout << "Enter k for add-k smoothing (1 for Laplace): " << std::endl << "\t";
-    std::getline(std::cin, str_k);
-    std::cin.clear();
-    try {
-        k = std::stod(str_k);
-    } catch (int ex) {
-        std::cout << "Incorrect input." << std::endl;
-    }
-    if (k < 0.0 || k > 1.0) {
-        std::cout << "Incorrect k for smoothing." << std::endl;
+    if (db.open()) {
+        qDebug() << "Open!!!";
+        QString table_context = "";
+        for (size_t i = 1; i < 3; i++) {
+            table_context += ", word_" + QString::number(i) + " Decimal(20,0) NOT NULL";
+        }
+        QSqlQuery query("DROP TABLE IF EXISTS word;"
+                        "DROP TABLE IF EXISTS context;"
+                        "DROP TABLE IF EXISTS grams;"
+                        "CREATE TABLE word ("
+                        "  word_id Decimal(20,0) primary key,"
+                        "  word_v TEXT"
+                        ");"
+                        "CREATE TABLE context ("
+                        "  context_id Decimal(20,0) NOT NULL" + table_context +
+                        ");"
+                        "CREATE TABLE grams ("
+                        "  context_id Decimal(20,0) NOT NULL,"
+                        "  token_id Decimal(20,0) NOT NULL"
+                        ");");
+        std::cout << "END" << std::endl;
     }
 
-    std::cout << "Enter number of suggestions: " << std::endl << "\t";
-    std::getline(std::cin, str_suggestions);
-    try {
-        suggestions = std::stoi(str_suggestions);
-    } catch (int ex) {
-        std::cout << "Incorrect input." << std::endl;
-    }
-    if (suggestions < 1) {
-        std::cout << "Incorrect number of suggestions." << std::endl;
-    }
-    std::cout << "Analyzing your input..." << std::endl;
-
-    ngram_model<unsigned long> m{db, n_grams, suggestions, k};
+    struct rusage r_usage;
+    ngram_model<unsigned long> m{db, 3, 3, 1};
     auto before = get_current_time_fenced();
     m.update(tokenized);
     auto time_to_calculate_reading = get_current_time_fenced() - before;
     std::cout << "model updating time: " << to_us(time_to_calculate_reading) << std::endl;
+    int ret = getrusage(RUSAGE_SELF, &r_usage);
+    std::cout << r_usage.ru_maxrss << std::endl;
 
-
-    std::vector<std::string> user_text_tokenized;
-    std::string user_input;
-    std::cout << "Start typing your text and when you want us to suggest something, press Enter." << std::endl;
-    std::cout << "If you want to stop the program, type q." << std::endl;
-    std::getline(std::cin, user_input);
-    std::vector<std::string> current_input = tokenize_text(user_input);
-    user_text_tokenized.reserve(user_text_tokenized.size() + std::distance(current_input.begin(),
-                                                                           current_input.end()));
-    user_text_tokenized.insert(user_text_tokenized.end(), current_input.begin(), current_input.end());
-    while (true) {
-        auto res = m.autocomplete(hashed_text(user_text_tokenized));
-
-        int count = 1;
-        for (const auto &elem: res) {
-            std::cout << count << ". " << elem << std::endl;
-            count++;
-        }
-
-        std::string str_suggestion_idx;
-        int suggestion_idx;
-        std::cout << "Enter number of suggestion you would like to choose:" << std::endl << "\t";
-        std::getline(std::cin, str_suggestion_idx);
-        if (str_suggestion_idx == "q") {
-            break;
-        }
-        try {
-            suggestion_idx = std::stoi(str_suggestion_idx);
-        } catch (int ex) {
-            std::cout << "Incorrect input." << std::endl;
-        }
-        if (1 > suggestion_idx || suggestion_idx > static_cast<int>(res.size())) {
-            std::cout << "Incorrect suggestion index." << std::endl;
-        }
-        user_text_tokenized.emplace_back(res[suggestion_idx - 1]);
-        for (const auto &word: user_text_tokenized) {
-            std::cout << word << " ";
-        }
-        std::cout << std::endl;
-    }
 #endif //PRINT_INTERACTION
 
     return 0;

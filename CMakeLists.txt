@@ -25,14 +25,16 @@ find_package(OpenMP REQUIRED)
 find_package(Qt5 COMPONENTS Sql REQUIRED)
 
 # Looks like it is not necessary:
-# set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
-# set(Boost_USE_MULTITHREAD ON)  # enable multithreading
+set(Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
+set(Boost_USE_MULTITHREAD ON)  # enable multithreading
 
 include_directories(${Boost_INCLUDE_DIR} ${ICU_INCLUDE_DIRS})
 include_directories(inc)
 
 add_executable(${TARGET_NAME} main.cpp inc/ngram_model.h inc/ngram.h
         src/word_tokenizer.cpp inc/word_tokenizer.h inc/ngram_hasher.h inc/vector_hasher.h)
+
+add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
 
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
 target_link_libraries(n_gram LINK_PUBLIC OpenMP::OpenMP_CXX)
