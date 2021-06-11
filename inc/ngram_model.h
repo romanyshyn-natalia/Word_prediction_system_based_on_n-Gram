@@ -34,9 +34,9 @@ public:
             hashed_tokens[word.first] = word.second;
         }
         std::vector<unsigned long> hash_tokens = hashed_text(new_tokens);
-#pragma omp parallel for shared(hash_tokens) default (none)
+// #pragma omp parallel for shared(hash_tokens) default (none)
         for (size_t i = number_of_grams - 1; i < hash_tokens.size(); ++i) {
-#pragma omp critical
+// #pragma omp critical
             {
                 tokens_count[hash_tokens[i]]++;
             }
@@ -46,10 +46,10 @@ public:
             }
             ngram<unsigned long> ngram(history, hash_tokens[i]);
             std::vector<unsigned long> new_context{ngram.getContext()};
-#pragma omp critical
+// #pragma omp critical
             {
                 ngram_count[ngram]++;
-                context[new_context].push_back(ngram.getToken());
+                context[history].push_back(ngram.getToken());
             }
         }
     };

@@ -30,13 +30,41 @@ find_package(OpenMP REQUIRED)
 include_directories(${Boost_INCLUDE_DIR} ${ICU_INCLUDE_DIRS})
 include_directories(inc)
 
-add_executable(${TARGET_NAME} main.cpp inc/ngram_model.h inc/ngram.h
+##################################
+# Download and install GoogleTest
+
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        release-1.10.0
+)
+
+FetchContent_GetProperties(googletest)
+if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+endif()
+
+################
+
+enable_testing()
+
+add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+
+
+add_library(n_gram SHARED inc/ngram_model.h inc/ngram.h
         src/word_tokenizer.cpp inc/word_tokenizer.h inc/ngram_hasher.h inc/vector_hasher.h)
 
 target_link_libraries(n_gram LINK_PUBLIC ${Boost_LIBRARIES} ${ICU_LIBRARIES} )
 target_link_libraries(n_gram LINK_PUBLIC OpenMP::OpenMP_CXX)
 
 include(cmake/Config.cmake)
+
+add_executable(run_test test.cpp)
+
+target_link_libraries(run_test n_gram)
+target_link_libraries(run_test gtest_main gtest)
 
 #if(UNIX AND NOT APPLE AND NOT CYGWIN)
 #    include(PVS-Studio.cmake)

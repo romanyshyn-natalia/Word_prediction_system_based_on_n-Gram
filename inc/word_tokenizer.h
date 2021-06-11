@@ -40,4 +40,6 @@ std::unordered_map<unsigned long, std::string> tokens_hasher(const std::vector<s
 std::vector<unsigned long> hashed_text(const std::vector<std::string> &tokenized);
 
 
+void hui();
+
 #endif //N_GRAM_WORD_TOKENIZER_H
